@@ -179,14 +179,14 @@ export async function deleteInvoice(id: string) {
     redirect('/dashboard/customers');
   }
 
-  const UpdateCustomer = FormSchema.omit({ id: true, date: true });
+const UpdateCustomer = FormSchema.omit({ id: true, date: true });
 
-export async function updatecustomer(
+export async function updateCustomer(
   id: string,
   prevState: State,
   formData: FormData,
 ) {
-  const validatedFields = UpdateInvoice.safeParse({
+  const validatedFields = UpdateCustomer.safeParse({
     customerId: formData.get('customerId'),
     status: formData.get('status'),
   });

@@ -1,109 +1,193 @@
-'use client';
+"use client"
 
-import { useFormState } from 'react-dom';
-import { CustomerField } from '@/app/lib/definitions';
-import Link from 'next/link';
+import Link from "next/link"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useFieldArray, useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
 import {
-  CheckIcon,
-  ClockIcon,
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import { Button } from '@/app/ui/button';
-import { addCustomer } from '@/app/lib/actions';
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import { toast } from "@/components/ui/use-toast"
 
-export default function Form({ customers }: { customers: CustomerField[] }) {
-  const initialState = { message: null, errors: {} };
-  const [state, dispatch] = useFormState(addCustomer, initialState);
- 
+const profileFormSchema = z.object({
+  username: z
+    .string()
+    .min(2, {
+      message: "Username must be at least 2 characters.",
+    })
+    .max(30, {
+      message: "Username must not be longer than 30 characters.",
+    }),
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .email(),
+  bio: z.string().max(160).min(4),
+  urls: z
+    .array(
+      z.object({
+        value: z.string().url({ message: "Please enter a valid URL." }),
+      })
+    )
+    .optional(),
+})
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>
+
+// This can come from your database or API.
+const defaultValues: Partial<ProfileFormValues> = {
+  bio: "I own a computer.",
+  urls: [
+    { value: "https://shadcn.com" },
+    { value: "http://twitter.com/shadcn" },
+  ],
+}
+
+export function ProfileForm() {
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues,
+    mode: "onChange",
+  })
+
+  const { fields, append } = useFieldArray({
+    name: "urls",
+    control: form.control,
+  })
+
+  function onSubmit(data: ProfileFormValues) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    })
+  }
+
   return (
-    <form action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Customer Name */}
-        <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-            Choose customer
-          </label>
-          <div className="relative">
-            <select
-              id="customer"
-              name="customerId"
-              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue=""
-              aria-describedby="customer-error"
-            >
-              <option value="" disabled>
-                Select a customer
-              </option>
-              {customers.map((name) => (
-                <option key={name.id} value={name.id}>
-                  {name.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.customerId &&
-              state.errors.customerId.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormDescription>
+                This is your public display name. It can be your real name or a
+                pseudonym. You can only change this once every 30 days.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a verified email to display" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="m@example.com">m@example.com</SelectItem>
+                  <SelectItem value="m@google.com">m@google.com</SelectItem>
+                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormDescription>
+                You can manage verified email addresses in your{" "}
+                <Link href="/examples/forms">email settings</Link>.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Bio</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Tell us a little bit about yourself"
+                  className="resize-none"
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                You can <span>@mention</span> other users and organizations to
+                link to them.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div>
+          {fields.map((field, index) => (
+            <FormField
+              control={form.control}
+              key={field.id}
+              name={`urls.${index}.value`}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className={cn(index !== 0 && "sr-only")}>
+                    URLs
+                  </FormLabel>
+                  <FormDescription className={cn(index !== 0 && "sr-only")}>
+                    Add links to your website, blog, or social media profiles.
+                  </FormDescription>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mt-2"
+            onClick={() => append({ value: "" })}
+          >
+            Add URL
+          </Button>
         </div>
-               
-
-        {/* Invoice Status */}
-        <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
-            Set the invoice status
-          </legend>
-          <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
-            <div className="flex gap-4">
-              <div className="flex items-center">
-                <input
-                  id="pending"
-                  name="status"
-                  type="radio"
-                  value="pending"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="pending"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
-                >
-                  Pending <ClockIcon className="h-4 w-4" />
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  id="paid"
-                  name="status"
-                  type="radio"
-                  value="paid"
-                  className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
-                />
-                <label
-                  htmlFor="paid"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
-                >
-                  Paid <CheckIcon className="h-4 w-4" />
-                </label>
-              </div>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/invoices"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Add Customer</Button>
-      </div>
-    </form>
-  );}
+        <Button type="submit">Create profile</Button>
+      </form>
+    </Form>
+  )
+}
 
     

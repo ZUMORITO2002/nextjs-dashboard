@@ -138,3 +138,89 @@ export async function deleteInvoice(id: string) {
       throw error;
     }
   }
+
+  //for Customers //
+
+  const AddCustomer = FormSchema.omit({ id: true, date: true });
+  export async function addCustomer (prevState: State, formData: FormData) {
+    // Validate form using Zod
+    const validatedFields = AddCustomer .safeParse({
+      customerId: formData.get('customerId'),
+      status: formData.get('status'),
+    });
+   
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Add Customer .',
+      };
+    }
+   
+    // Prepare data for insertion into the database
+    const { customerId, status } = validatedFields.data;
+    const date = new Date().toISOString().split('T')[0];
+   
+    // Insert data into the database
+    try {
+      await sql`
+        INSERT INTO customers (customer_id, status, date)
+        VALUES (${customerId}, ${status}, ${date})
+      `;
+    } catch (error) {
+      // If a database error occurs, return a more specific error.
+      return {
+        message: 'Database Error: Failed to Add Customer .',
+      };
+    }
+   
+    // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath('/dashboard/customers');
+    redirect('/dashboard/customers');
+  }
+
+  const UpdateCustomer = FormSchema.omit({ id: true, date: true });
+
+export async function updatecustomer(
+  id: string,
+  prevState: State,
+  formData: FormData,
+) {
+  const validatedFields = UpdateInvoice.safeParse({
+    customerId: formData.get('customerId'),
+    status: formData.get('status'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Customer.',
+    };
+  }
+ 
+  const { customerId,status } = validatedFields.data;
+ 
+  try {
+    await sql`
+      UPDATE invoices
+      SET customer_id = ${customerId}, status = ${status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Customer.' };
+  }
+ 
+  revalidatePath('/dashboard/customers');
+  redirect('/dashboard/customers');
+}
+
+  export async function removeCustomer (id: string) {
+  
+      try {
+        await sql`DELETE FROM customers WHERE id = ${id}`;
+        revalidatePath('/dashboard/customers');
+        return { message: 'Removed Customer.' };
+      } catch (error) {
+        return { message: 'Database Error: Failed to Remove Customer.' };
+      }
+    }

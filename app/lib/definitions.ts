@@ -86,3 +86,38 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type Suppliers = {
+  id: string;
+  name : string;
+  email: string;
+  location: string; 
+  organization_type: string;
+  industry: string;
+  revenue: number;
+  num_employees: number;
+  year_of_incorporation: string;
+  receiving_purchase_orders: string;
+  receiving_payments: string;
+  currency: string;
+  rating : string;
+};
+
+export type FormattedSuppliersTable = {
+  id: string;
+  name: string;
+  email: string;
+  rating : string;
+};
+
+export type SuppliersField = {
+  id: string;
+  name: string;
+};
+
+export type SuppliersTableType = {
+  id: string;
+  name: string;
+  email: string;
+
+};

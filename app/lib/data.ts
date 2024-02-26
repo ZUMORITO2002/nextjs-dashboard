@@ -7,6 +7,8 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  SuppliersField,
+  SuppliersTableType
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -252,3 +254,74 @@ export async function getUser(email: string) {
     throw new Error('Failed to fetch user.');
   }
 }
+
+
+
+
+
+
+export async function fetchSuppliers() {
+  noStore();
+  try {
+    const data = await sql<SuppliersField>`
+      SELECT
+        id,
+        name
+      FROM suppliers
+      ORDER BY name ASC
+    `;
+
+    const suppliers = data.rows;
+    return suppliers ;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all suppliers.');
+  }
+}
+
+export async function fetchSuppliersPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM invoices
+    JOIN customers ON invoices.customer_id = customers.id
+    WHERE
+      customers.name ILIKE ${`%${query}%`} OR
+      customers.email ILIKE ${`%${query}%`} OR
+      invoices.status ILIKE ${`%${query}%`}
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of customers.');
+  }
+}
+
+export async function fetchFilteredSuppliers (query: string) {
+  noStore();
+  try {
+    const data = await sql<SuppliersTableType>`
+		SELECT
+		  suppliers.id,
+		  suppliers.name,
+		  suppliers.email,
+      suppliers.rating,
+
+		GROUP BY suppliers.id, suppliers.name, suppliers.email, suppliers.rating
+		ORDER BY suppliers.name ASC
+	  `;
+
+    const suppliers = data.rows.map((suppliers) => ({
+      ...suppliers,
+    }));
+
+    return suppliers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch suppliers table.');
+  }
+}
+
+

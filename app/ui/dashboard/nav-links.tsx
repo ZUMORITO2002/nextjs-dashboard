@@ -8,6 +8,8 @@ import {
   WrenchScrewdriverIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/outline';
+
+import { FaTruckMoving } from "react-icons/fa";
  
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -21,9 +23,9 @@ const links = [
     icon: DocumentDuplicateIcon,
   },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
-  { name: 'Finance',
-    href: '/dashboard/Finance',
-    icon: BanknotesIcon,
+  { name: 'Suppliers',
+    href: '/dashboard/Suppliers',
+    icon: FaTruckMoving,
   },
   { name: 'Orders', href: '/dashboard/Orders', icon: ShoppingCartIcon },
   { name: 'Materials', href: '/dashboard/Materials', icon: WrenchScrewdriverIcon },

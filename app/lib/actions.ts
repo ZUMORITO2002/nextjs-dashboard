@@ -21,6 +21,18 @@ const FormSchema = z.object({
     date: z.string(),
   });
 
+const FormSupplierSchema = z.object({
+    id: z.string(),
+    suppliername: z.string({
+      invalid_type_error: 'Please select a Suppliers.',
+    }),
+    rating: z.coerce
+      .number()
+      .gt(0, { message: 'Please enter an rating greater than 0.' }),
+    email: z.string({
+      invalid_type_error: 'Please enater a email.',}),
+  });
+  
   export type State = {
     errors?: {
       customerId?: string[];
@@ -29,6 +41,16 @@ const FormSchema = z.object({
     };
     message?: string | null;
   };
+
+  export type NewState =  {
+    errors?: {
+      suppliername?: string[];
+      email?: string[];
+      rating?: string[];
+    };
+    message?: string | null;
+  };
+
 
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -224,3 +246,91 @@ export async function updateCustomer(
         return { message: 'Database Error: Failed to Remove Customer.' };
       }
     }
+
+//for Suppliers //
+
+const AddSupplier = FormSupplierSchema.omit({ id: true, date: true });
+export async function addSupplier(prevState: NewState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = AddSupplier .safeParse({
+    Suppliername: formData.get('name'),
+    email: formData.get('email'),
+    rating: formData.get('rating'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Add Supplier .',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { suppliername, email, rating} = validatedFields.data;
+  
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO suppliers (name, email, rating)
+      VALUES (${suppliername}, ${email}, ${rating})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Add Supplier .',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/Suppliers');
+  redirect('/dashboard/Suppliers');
+}
+
+const UpdateSupplier = FormSupplierSchema.omit({ id: true, date: true });
+
+export async function updateSupplier(
+id: string,
+prevState: NewState,
+formData: FormData,
+) {
+const validatedFields = UpdateSupplier.safeParse({
+  Suppliername: formData.get('name'),
+  email: formData.get('email'),
+  rating: formData.get('rating'),
+});
+
+if (!validatedFields.success) {
+  return {
+    errors: validatedFields.error.flatten().fieldErrors,
+    message: 'Missing Fields. Failed to Update Supplier.',
+  };
+}
+
+const { suppliername, email, rating} = validatedFields.data;
+
+try {
+  await sql`
+    UPDATE suppliers
+    SET Name = ${suppliername}, email = ${email}
+    WHERE id = ${id}
+  `;
+} catch (error) {
+  return { message: 'Database Error: Failed to Update Supplier.' };
+}
+
+revalidatePath('/dashboard/Suppliers');
+redirect('/dashboard/Suppliers');
+}
+
+export async function removeSupplier (id: string) {
+
+    try {
+      await sql`DELETE FROM Supplier WHERE id = ${id}`;
+      revalidatePath('/dashboard/Suppliers');
+      return { message: 'Removed Suppliers.' };
+    } catch (error) {
+      return { message: 'Database Error: Failed to Remove Supplier.' };
+    }
+  }
+

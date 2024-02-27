@@ -62,7 +62,7 @@ const defaultValues: Partial<ProfileFormValues> = {
   ],
 }
 
-export function ProfileForm() {
+export function SuppliersProfileForm() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -93,97 +93,160 @@ export function ProfileForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name of the Organization</FormLabel>
               <FormControl>
                 <Input placeholder="shadcn" {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name. It can be your real name or a
-                pseudonym. You can only change this once every 30 days.
+                This is the company name
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
+       <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>E-mail of the Organization</FormLabel>
+              <FormControl>
+                <Input placeholder="example@gmail.com"  />
+              </FormControl>
               <FormDescription>
-                You can manage verified email addresses in your{" "}
-                <Link href="/examples/forms">email settings</Link>.
+                Please Enter a valid E-mail address
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+          <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Location of the Organization</FormLabel>
+              <FormControl>
+                <Input placeholder="Location of the Organization"  />
+              </FormControl>
+              <FormDescription>
+                Please Enter a valid address
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+       
         <FormField
           control={form.control}
           name="bio"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bio</FormLabel>
+              <FormLabel>Organization Type</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  className="resize-none"
-                  {...field}
-                />
+                <Input placeholder="Private Company(LTD)"  />
               </FormControl>
               <FormDescription>
-                You can <span>@mention</span> other users and organizations to
-                link to them.
+                Please Enter if your company is private or public
               </FormDescription>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <div>
-          {fields.map((field, index) => (
-            <FormField
-              control={form.control}
-              key={field.id}
-              name={`urls.${index}.value`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className={cn(index !== 0 && "sr-only")}>
-                    URLs
-                  </FormLabel>
-                  <FormDescription className={cn(index !== 0 && "sr-only")}>
-                    Add links to your website, blog, or social media profiles.
-                  </FormDescription>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
               )}
             />
-          ))}
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="mt-2"
-            onClick={() => append({ value: "" })}
-          >
-            Add URL
-          </Button>
-        </div>
+            
+            
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Please Enter Your Industry</FormLabel>
+              <FormControl>
+                <Input placeholder="Fabrication" />
+              </FormControl>
+              <FormDescription>
+                Enter Your Industry Type
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+              )}
+            />
+
+            
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Year Of Incorporation</FormLabel>
+              <FormControl>
+                <Input placeholder="1969"  />
+              </FormControl>
+              <FormDescription>
+                Please Enter a year 
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+              )}
+            />
+            
+
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Receiving Purchase Orders </FormLabel>
+              <FormControl>
+                <Input placeholder="Email,Bill,Invoices"  />
+              </FormControl>
+              <FormDescription>
+                Please Enter how to receive purchase orders
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+              )}
+            />
+            
+
+            
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Receiving Payments </FormLabel>
+              <FormControl>
+                <Input placeholder="Cash,UPI,Etc..." />
+              </FormControl>
+              <FormDescription>
+                Please Enter how to receive payments
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+              )}
+            />
+           
+            
+        <FormField
+          control={form.control}
+          name="bio"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Currencies </FormLabel>
+              <FormControl>
+                <Input placeholder="INR,USD"/>
+              </FormControl>
+              <FormDescription>
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+              )}
+            />
+            
+
+          
+        
         <Button type="submit">Create profile</Button>
       </form>
     </Form>

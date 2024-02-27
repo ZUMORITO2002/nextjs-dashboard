@@ -4,9 +4,9 @@ import { AddSupplier} from '@/app/ui/suppliers/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchSuppliers , fetchSuppliersPages } from '@/app/lib/data';
+import { fetchSuppliers } from '@/app/lib/data';
 import { Metadata } from 'next';
-import Table from '@/app/ui/customers/table';
+import Table from '@/app/ui/suppliers/table';
 import { string } from 'zod';
 import { SuppliersField,SuppliersTableType, FormattedSuppliersTable } from '@/app/lib/definitions';
  
@@ -23,8 +23,8 @@ export default async function Page({
     };
   }) {
     const query = searchParams?.query || '';
-    const currentPage = Number(searchParams?.page) || 1;
-    const totalPages = await fetchSuppliersPages(query);
+    // const currentPage = Number(searchParams?.page) || 1;
+    // const totalPages = await fetchSuppliersPages(query);
 
   return (
     <div className="w-full">
@@ -35,12 +35,15 @@ export default async function Page({
         <Search placeholder="Search suppliers..." />
         <AddSupplier />
       </div>
-       <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
+      <Suspense key={query} fallback={<CustomersTableSkeleton />}>
+        <Table query={query} />
+      </Suspense>
+       {/* <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div>
+      </div> */}
     </div>
   );
 }

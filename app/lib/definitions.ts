@@ -119,5 +119,5 @@ export type SuppliersTableType = {
   id: string;
   name: string;
   email: string;
-
+  rating: string;
 };

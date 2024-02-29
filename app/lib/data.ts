@@ -8,7 +8,8 @@ import {
   User,
   Revenue,
   SuppliersField,
-  SuppliersTableType
+  SuppliersTableType,
+  FormattedSuppliersTable
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';

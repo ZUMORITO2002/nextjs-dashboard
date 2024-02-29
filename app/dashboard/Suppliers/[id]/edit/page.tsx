@@ -1,4 +1,4 @@
-import Form from '@/app/ui/suppliers/edit-form';
+import {EditSupplier} from '@/app/ui/suppliers/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchSuppliers } from '@/app/lib/data';
 import { updateSupplier } from '@/app/lib/actions';
@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form  suppliers={Suppliers} />
+      <EditSupplier />
     </main>
   );
 }

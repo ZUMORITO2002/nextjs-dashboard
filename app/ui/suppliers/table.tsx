@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { EditSupplier, RemoveSupplier } from '@/app/ui/suppliers/buttons';
+import { EditSupplier, RemoveSupplier, SummarySupplier } from '@/app/ui/suppliers/buttons';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredSuppliers} from '@/app/lib/data';
 
@@ -73,6 +73,7 @@ export default async function SuppliersTable({
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
+                      <SummarySupplier id={supplier.id}/>
                       <EditSupplier id={supplier.id} />
                       <RemoveSupplier id={supplier.id} />
                     </div>

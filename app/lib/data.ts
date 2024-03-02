@@ -9,7 +9,10 @@ import {
   Revenue,
   SuppliersField,
   SuppliersTableType,
-  FormattedSuppliersTable
+  OrdersTable,
+  FormattedSuppliersTable,
+  OrderForm,
+  OrdersField,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -165,7 +168,7 @@ export async function fetchInvoiceById(id: string) {
       ...invoice,
       amount: invoice.amount,
     }));
-    console.log(invoice); 
+    console.log(invoice);
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
@@ -256,11 +259,6 @@ export async function getUser(email: string) {
   }
 }
 
-
-
-
-
-
 export async function fetchSuppliers() {
   noStore();
   try {
@@ -269,7 +267,7 @@ export async function fetchSuppliers() {
     `;
 
     const Suppliers = data.rows;
-    return Suppliers ;
+    return Suppliers;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all suppliers.');
@@ -296,7 +294,7 @@ export async function fetchSuppliers() {
 //   }
 // }
 
-export async function fetchFilteredSuppliers (query: string) {
+export async function fetchFilteredSuppliers(query: string) {
   noStore();
   try {
     const data = await sql<SuppliersTableType>`
@@ -306,16 +304,87 @@ export async function fetchFilteredSuppliers (query: string) {
 
     const suppliers = data.rows.map((Suppliers) => ({
       ...Suppliers,
-      
-    })
-    );
+    }));
 
     return suppliers;
-    console.log(suppliers)
+    console.log(suppliers);
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch suppliers table.');
   }
 }
 
+export async function fetchFilteredOrders(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
+  try {
+    const orders = await sql<OrdersTable>`
+    SELECT
+    orders.id,
+    orders.amount,
+    orders.date,
+    orders.status,
+    orders.name
+FROM
+    orders
+WHERE
+    orders.name ILIKE 'Order 1' OR
+    orders.amount::text ILIKE '100.50' OR
+    orders.date::text ILIKE '2024-02-27' OR
+    orders.status ILIKE 'pending'
+ORDER BY
+    orders.date DESC;
+
+    `;
+
+    return orders.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch Orders.');
+  }
+}
+
+export async function fetchOrdersById(id: string) {
+  noStore();
+  try {
+    const data = await sql<OrderForm>`
+      SELECT
+        orders.id,
+        orders.customer_id,
+        orders.amount,
+        orders.status
+      FROM orders
+      WHERE orders.id = ${id};
+    `;
+
+    const order = data.rows.map((order) => ({
+      ...order,
+      amount: order.amount,
+    }));
+    console.log(order);
+    return order[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch order.');
+  }
+}
+
+export async function fetchOrders() {
+  noStore();
+  try {
+    const data = await sql<OrdersField>`
+      SELECT
+        id,
+        name
+      FROM orders
+      ORDER BY name ASC
+    `;
+
+    const orders = data.rows;
+    return orders;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all orders.');
+  }
+}

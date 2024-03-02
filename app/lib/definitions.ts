@@ -121,3 +121,25 @@ export type SuppliersTableType = {
   email: string;
   rating: string;
 };
+
+export type OrderForm = {
+  id: string;
+  customer_id: string;
+  amount: number;
+  status: 'pending' | 'delivered';
+};
+
+export type OrdersTable = {
+  id: string;
+  customer_id: string;
+  name: string;
+  location: string;
+  date: string;
+  amount: number;
+  status: 'pending' | 'delivered';
+};
+
+export type OrdersField = {
+  id: string;
+  name: string;
+};

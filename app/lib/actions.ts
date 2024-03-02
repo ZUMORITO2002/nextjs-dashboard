@@ -334,3 +334,87 @@ export async function removeSupplier (id: string) {
     }
   }
 
+
+//for Orders//
+
+
+const CreateOrder = FormSchema.omit({ id: true, date: true });
+
+
+export async function createOrder(prevState: State, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateInvoice.safeParse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Add Order.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { customerId, amount, status } = validatedFields.data;
+  const amountInCents = amount * 100;
+  const date = new Date().toISOString().split('T')[0];
+ 
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO orders (customer_id, amount, status, date)
+      VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Add Order.',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/orders');
+  redirect('/dashboard/orders');
+}
+
+
+
+const UpdateOrder = FormSchema.omit({ id: true, date: true });
+
+export async function updateOrder(
+  id: string,
+  prevState: State,
+  formData: FormData,
+) {
+  const validatedFields = UpdateOrder.safeParse({
+    customerId: formData.get('customerId'),
+    amount: formData.get('amount'),
+    status: formData.get('status'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Order.',
+    };
+  }
+ 
+  const { customerId, amount, status } = validatedFields.data;
+  const amountInCents = amount * 100;
+ 
+  try {
+    await sql`
+      UPDATE orders
+      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Order.' };
+  }
+ 
+  revalidatePath('/dashboard/orders');
+  redirect('/dashboard/orders');
+}

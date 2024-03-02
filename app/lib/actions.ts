@@ -418,3 +418,15 @@ export async function updateOrder(
   revalidatePath('/dashboard/orders');
   redirect('/dashboard/orders');
 }
+
+export async function removeOrder (id: string) {
+  
+  try {
+    await sql`DELETE FROM orders WHERE id = ${id}`;
+    revalidatePath('/dashboard/orders');
+    return { message: 'Removed Order.' };
+  } catch (error) {
+    return { message: 'Database Error: Failed to Remove Order.' };
+  }
+}
+

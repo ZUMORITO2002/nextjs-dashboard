@@ -109,7 +109,7 @@ export default function EditOrderForm({
                   htmlFor="delivered"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Paid <CheckIcon className="h-4 w-4" />
+                  Delivered <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>

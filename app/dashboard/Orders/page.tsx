@@ -1,6 +1,6 @@
 import Pagination from '@/app/ui/customers/pagination';
 import Search from '@/app/ui/search';
-import { AddOrder} from '@/app/ui/orders/buttons';
+import { AddOrder, AllOrder, OPOrder, DeliveredOrder, NewOrder} from '@/app/ui/orders/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -29,11 +29,17 @@ export default async function Page({
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
-        <h1 className={`${lusitana.className} text-2xl`}>Orders</h1>
+        <h1 className={`${lusitana.className} text-2xl`}></h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search orders..." />
         <AddOrder />
+      </div>
+      <div className="mt-1 flex  gap-3">
+        <AllOrder />
+        <NewOrder />
+        <OPOrder />
+        <DeliveredOrder />
       </div>
        <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

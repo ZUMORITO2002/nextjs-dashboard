@@ -321,27 +321,23 @@ export async function fetchFilteredOrders(query: string, currentPage: number) {
   try {
     const orders = await sql<OrdersTable>`
     SELECT
-    orders.id,
-    orders.amount,
-    orders.date,
-    orders.status,
-    orders.name
-FROM
+    id,
+    customer_id,
+    name,
+    location,
+    date,
+    amount,
+    status
+    FROM
     orders
-WHERE
-    orders.name ILIKE 'Order 1' OR
-    orders.amount::text ILIKE '100.50' OR
-    orders.date::text ILIKE '2024-02-27' OR
-    orders.status ILIKE 'pending'
-ORDER BY
-    orders.date DESC;
-
-    `;
+    ORDER BY
+    CAST(id AS INTEGER) ASC;
+`;
 
     return orders.rows;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch Orders.');
+    console.error( error);
+    // throw new Error('Failed to fetch Orders.');
   }
 }
 
@@ -366,7 +362,7 @@ export async function fetchOrdersById(id: string) {
     return order[0];
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch order.');
+    throw new Error('Failed to fetch id of order.');
   }
 }
 
@@ -386,5 +382,92 @@ export async function fetchOrders() {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all orders.');
+  }
+}
+
+
+export async function fetchNewOrders() {
+  noStore();
+
+  try {
+    const orders = await sql<OrdersTable>`
+    SELECT
+    id,
+    customer_id,
+    name,
+    location,
+    date,
+    amount,
+    status
+    FROM
+    orders
+    ORDER BY
+    date DESC;
+
+`;
+
+    return orders.rows;
+  } catch (error) {
+    console.error( error);
+    // throw new Error('Failed to fetch New Orders.');
+  }
+}
+
+
+export async function fetchOPOrders() {
+  noStore();
+
+  try {
+    const orders = await sql<OrdersTable>`
+    SELECT
+    id,
+    customer_id,
+    name,
+    location,
+    date,
+    amount,
+    status
+    FROM
+    orders
+    WHERE
+    status = 'pending'
+    ORDER BY
+    status;
+
+`;
+
+    return orders.rows;
+  } catch (error) {
+    console.error( error);
+    // throw new Error('Failed to fetch On Progress Orders.');
+  }
+}
+
+
+export async function fetchDeliveredOrders() {
+  noStore();
+  try {
+    const orders = await sql<OrdersTable>`
+    SELECT
+    id,
+    customer_id,
+    name,
+    location,
+    date,
+    amount,
+    status
+    FROM
+    orders
+    WHERE
+    status = 'delivered'
+    ORDER BY
+    status;
+
+`;
+
+    return orders.rows;
+  } catch (error) {
+    console.error( error);
+    // throw new Error('Failed to fetch Delivered Orders.');
   }
 }

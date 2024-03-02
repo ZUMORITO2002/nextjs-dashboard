@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import { EditCustomer, RemoveCustomer } from '@/app/ui/customers/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
@@ -12,7 +13,7 @@ export default async function InvoicesTable({
   currentPage: number;
 }) {
   const invoices = await fetchFilteredInvoices(query, currentPage);
-
+  console.log(invoices)
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">

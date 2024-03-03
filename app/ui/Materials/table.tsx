@@ -28,9 +28,9 @@ export default async function MaterialsTable({
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <p>{material.name}</p>
+                      <p>{material.materials_id}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{material.materials_id}</p>
+                    <p className="text-sm text-gray-500">{material.name}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -72,11 +72,11 @@ export default async function MaterialsTable({
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{material.name}</p>
+                      <p>{material.materials_id}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {material.materials_id}
+                    {material.name}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(material.stock)}

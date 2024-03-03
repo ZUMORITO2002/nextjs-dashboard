@@ -1,7 +1,7 @@
 'use client';
 
 import { updateMaterial } from '@/app/lib/actions';
-import { MaterialsField } from '@/app/lib/definitions';
+import { MaterialsField, MaterialsForm } from '@/app/lib/definitions';
 import {
   CheckIcon,
   ClockIcon,
@@ -13,9 +13,9 @@ import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { useFormState } from 'react-dom';
 
-  export default function EditMaterialForm({ materials}: { materials: MaterialsField[] }) {
+  export default function EditMaterialForm({ materials,material }: { materials: MaterialsField[] ;material: MaterialsForm;}) {
   const initialState = { message: null, errors: {} };
-  const updateMaterialWithId = updateMaterial.bind(null, materials.materials_id);
+  const updateMaterialWithId = updateMaterial.bind(null, material.materials_id);
   const [state, dispatch] = useFormState(updateMaterialWithId, initialState);
  
   return (

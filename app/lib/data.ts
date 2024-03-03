@@ -13,6 +13,9 @@ import {
   FormattedSuppliersTable,
   OrderForm,
   OrdersField,
+  MaterialsField,
+  MaterialsForm,
+  MaterialsTable,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -336,7 +339,7 @@ export async function fetchFilteredOrders(query: string, currentPage: number) {
 
     return orders.rows;
   } catch (error) {
-    console.error( error);
+    console.error(error);
     // throw new Error('Failed to fetch Orders.');
   }
 }
@@ -385,7 +388,6 @@ export async function fetchOrders() {
   }
 }
 
-
 export async function fetchNewOrders() {
   noStore();
 
@@ -408,11 +410,10 @@ export async function fetchNewOrders() {
 
     return orders.rows;
   } catch (error) {
-    console.error( error);
+    console.error(error);
     // throw new Error('Failed to fetch New Orders.');
   }
 }
-
 
 export async function fetchOPOrders() {
   noStore();
@@ -438,11 +439,10 @@ export async function fetchOPOrders() {
 
     return orders.rows;
   } catch (error) {
-    console.error( error);
+    console.error(error);
     // throw new Error('Failed to fetch On Progress Orders.');
   }
 }
-
 
 export async function fetchDeliveredOrders() {
   noStore();
@@ -467,7 +467,79 @@ export async function fetchDeliveredOrders() {
 
     return orders.rows;
   } catch (error) {
-    console.error( error);
+    console.error(error);
     // throw new Error('Failed to fetch Delivered Orders.');
+  }
+}
+
+export async function fetchMaterials() {
+  noStore();
+  try {
+    const data = await sql<MaterialsField>`
+    SELECT
+    id,
+    materials_id,
+    name,
+    stock
+    FROM materials
+    ORDER BY CAST(id AS INTEGER) ASC;
+
+    `;
+
+    const materials = data.rows;
+    return materials;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all Materials.');
+  }
+}
+
+
+export async function fetchMaterialsById(id: string) {
+  noStore();
+  try {
+    const data = await sql<MaterialsForm>`
+      SELECT
+        materials.id,
+        materials.materials_id,
+        materials.name,
+        materials.stock
+      FROM materials
+      WHERE materials.id = ${id};
+    `;
+
+    const material = data.rows.map((material) => ({
+      ...material,
+      stock: material.stock,
+    }));
+    console.log(material);
+    return material[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch id of material.');
+  }
+}
+
+
+export async function fetchFilteredMaterials(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const materials = await sql<MaterialsTable>`
+    SELECT
+    id,
+    materials_id,
+    name,
+    stock
+    FROM materials
+    ORDER BY CAST(id AS INTEGER) ASC;
+
+    `;
+
+    return materials.rows;
+  } catch (error) {
+    console.error(error);
+    // throw new Error('Failed to fetch Materials.');
   }
 }

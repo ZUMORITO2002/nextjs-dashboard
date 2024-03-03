@@ -143,3 +143,27 @@ export type OrdersField = {
   id: string;
   name: string;
 };
+
+export type MaterialsField = {
+  id: string;
+  materials_id: string;
+  name: string;
+  stock: number;
+};
+
+
+export type MaterialsForm = {
+  id: string;
+  materials_id: string;
+  name: string;
+  stock: number;
+  
+};
+
+
+export type MaterialsTable = {
+  id: string;
+  materials_id: string;
+  name: string;
+  stock: number;
+};

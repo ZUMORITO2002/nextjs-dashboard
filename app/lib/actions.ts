@@ -33,6 +33,18 @@ const FormSupplierSchema = z.object({
       invalid_type_error: 'Please enater a email.',}),
   });
   
+
+  const FormMaterialSchema = z.object({
+    id: z.string(),
+    materialsId: z.string(),
+    materialname: z.string({
+      invalid_type_error: 'Please select the Material.',
+    }),
+    stock: z.coerce
+      .number()
+      .gt(0, { message: 'Please enter an stock greater than 0.' }),
+  });
+  
   export type State = {
     errors?: {
       customerId?: string[];
@@ -51,6 +63,14 @@ const FormSupplierSchema = z.object({
     message?: string | null;
   };
 
+  export type MaterialState =  {
+    errors?: {
+      materialsId?: string[];
+      ordername?: string[];
+      stock?: string[];
+    };
+    message?: string | null;
+  };
 
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -343,7 +363,7 @@ const CreateOrder = FormSchema.omit({ id: true, date: true });
 
 export async function createOrder(prevState: State, formData: FormData) {
   // Validate form using Zod
-  const validatedFields = CreateInvoice.safeParse({
+  const validatedFields = CreateOrder.safeParse({
     customerId: formData.get('customerId'),
     amount: formData.get('amount'),
     status: formData.get('status'),
@@ -427,6 +447,102 @@ export async function removeOrder (id: string) {
     return { message: 'Removed Order.' };
   } catch (error) {
     return { message: 'Database Error: Failed to Remove Order.' };
+  }
+}
+
+
+
+//for Materials//
+
+
+
+const CreateMaterial = FormMaterialSchema.omit({ id: true, date: true });
+
+
+export async function createMaterial(prevState: MaterialState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateMaterial.safeParse({
+    MaterialsId: formData.get('materials_id'),
+    Materialsname: formData.get('name'),
+    stock: formData.get('stock'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Add Materials.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { materialsId,materialname, stock } = validatedFields.data;
+  const date = new Date().toISOString().split('T')[0];
+ 
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO materials (materials_id, name, stock)
+      VALUES (${materialsId},${materialname}, ${stock})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Add Material.',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/Materials');
+  redirect('/dashboard/Materials');
+}
+
+
+
+const UpdateMaterial = FormMaterialSchema.omit({ id: true, date: true });
+
+export async function updateMaterial(
+  id: string,
+  prevState: MaterialState,
+  formData: FormData,
+) {
+  const validatedFields = UpdateMaterial.safeParse({
+    MaterialsId: formData.get('materials_id'),
+    Materialsname: formData.get('name'),
+    stock: formData.get('stock'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Order.',
+    };
+  }
+ 
+  const { materialsId, materialname, stock } = validatedFields.data;
+ 
+  try {
+    await sql`
+      UPDATE materials
+      SET  materialid = ${materialsId},name = ${materialname}, stock = ${stock}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Materials.' };
+  }
+ 
+  revalidatePath('/dashboard/Materials');
+  redirect('/dashboard/Materials');
+}
+
+export async function removeMaterial (id: string) {
+  
+  try {
+    await sql`DELETE FROM orders WHERE id = ${id}`;
+    revalidatePath('/dashboard/Materials');
+    return { message: 'Removed Materials.' };
+  } catch (error) {
+    return { message: 'Database Error: Failed to Remove Materials.' };
   }
 }
 

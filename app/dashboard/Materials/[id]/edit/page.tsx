@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form  materials={[materials]}  />
+      <Form material={materials} materials={[]}  />
     </main>
   );
 }

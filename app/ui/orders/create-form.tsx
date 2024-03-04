@@ -11,6 +11,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { createOrder } from '@/app/lib/actions';
+import DocumentTextIcon from '@heroicons/react/20/solid/DocumentTextIcon';
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState = { message: null, errors: {} };
@@ -52,6 +53,28 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
               ))}
           </div>
         </div>
+
+
+        {/* Order Description */}
+        <div className="mb-4">
+  <label htmlFor="description" className="mb-2 block text-sm font-medium">
+    Enter the description
+  </label>
+  <div className="relative mt-2 rounded-md">
+    <div className="relative">
+      <input
+        id="description"
+        name="description"
+        type="text"
+        placeholder="Enter description"
+        className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+        required
+      />
+      <DocumentTextIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+    </div>
+  </div>
+</div>
+
                 {/* Order Amount */}
                 <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
@@ -72,6 +95,8 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
             </div>
           </div>
         </div>
+
+
 
         {/* Order Status */}
         <fieldset>
@@ -107,7 +132,7 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
                   htmlFor="delivered"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Delievered <CheckIcon className="h-4 w-4" />
+                  Completed <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>

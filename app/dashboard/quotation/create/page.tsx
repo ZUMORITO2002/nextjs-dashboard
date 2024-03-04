@@ -1,4 +1,4 @@
-import Form from '@/app/ui/invoices/create-form';
+import Form from '@/app/ui/quotation/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchQuotation } from '@/app/lib/data';
 import ImageUpload from "@/app/ui/quotation/image-upload";
@@ -18,15 +18,15 @@ export default async function Page() {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Invoices', href: '/dashboard/invoices' },
+          { label: 'Quotation', href: '/dashboard/quotation' },
           {
-            label: 'Create Invoice',
-            href: '/dashboard/invoices/create',
+            label: 'Create Quotation',
+            href: '/dashboard/quotation/create',
             active: true,
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form quotation={customers} />
       <h1 className="text-5xl font-semibold justify-center al">OR</h1>
       <p className="text-muted-foreground">File upload component for React</p>
       <div className="flex gap-4">

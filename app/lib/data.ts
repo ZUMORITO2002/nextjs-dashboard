@@ -16,6 +16,10 @@ import {
   MaterialsField,
   MaterialsForm,
   MaterialsTable,
+  QuotationField,
+  QuotationTable,
+  QuotationForm,
+  Suppliers,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -543,3 +547,196 @@ export async function fetchFilteredMaterials(query: string, currentPage: number)
     // throw new Error('Failed to fetch Materials.');
   }
 }
+
+
+export async function fetchQuotation() {
+  noStore();
+  try {
+    const data = await sql<QuotationField>`
+    SELECT
+    id,
+    quotation_id,
+    name,
+    supplier,
+    date,
+    status
+    FROM quotation
+    ORDER BY CAST(id AS INTEGER) ASC;
+
+    `;
+
+    const quotations = data.rows;
+    return quotations;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all Quotations.');
+  }
+}
+
+
+
+export async function fetchFilteredQuotation(query: string, currentPage: number) {
+  noStore();
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const quotations = await sql<QuotationTable>`
+    SELECT
+    id,
+    quotation_id,
+    name,
+    supplier,
+    date,
+    status
+    FROM quotation
+    ORDER BY CAST(id AS INTEGER) ASC;
+    `;
+
+    return quotations.rows;
+  } catch (error) {
+    console.error(error);
+    // throw new Error('Failed to fetch Quotations.');
+  }
+}
+
+
+export async function fetchQuotationsById(id: string) {
+  noStore();
+  try {
+    const data = await sql<QuotationForm>`
+      SELECT
+        quotation.id,
+        quotation.quotation_id,
+        quotation.name,
+        quotation.supplier,
+        quotation.date,
+        quotation.status
+      FROM quotation
+      WHERE quotation.id = ${id};
+    `;
+
+    const quotation = data.rows.map((quotation ) => ({
+      ...quotation ,
+    }));
+    console.log(quotation );
+    return quotation [0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch id of quotation .');
+  }
+}
+
+
+
+export async function fetchApprovedQuotation() {
+  noStore();
+  try {
+    const quotations = await sql<QuotationTable>`
+    SELECT
+    id,
+    quotation_id,
+    name,
+    supplier,
+    date,
+    status
+    FROM
+    quotation
+    WHERE
+    status = 'approved'
+    ORDER BY
+    status;
+
+`;
+
+    return quotations.rows;
+  } catch (error) {
+    console.error(error);
+    // throw new Error('Failed to fetch Delivered Quotations.');
+  }
+}
+
+export async function fetchDeniedQuotation() {
+  noStore();
+  try {
+    const quotations = await sql<QuotationTable>`
+    SELECT
+    id,
+    quotation_id,
+    name,
+    supplier,
+    date,
+    status
+    FROM
+    quotation
+    WHERE
+    status = 'denied'
+    ORDER BY
+    status;
+
+
+`;
+
+    return quotations.rows;
+  } catch (error) {
+    console.error(error);
+    // throw new Error('Failed to fetch Delivered Quotations.');
+  }
+}
+
+
+export async function fetchQuotationPages(query: string) {
+  noStore();
+  try {
+    const count = await sql`
+    SELECT
+    id,
+    quotation_id,
+    name,
+    supplier,
+    date,
+    status
+    FROM quotation
+    ORDER BY CAST(id AS INTEGER) ASC;
+  `;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of Quotations.');
+  }
+}
+
+
+export async function fetchSuppliersById(id: string){
+  noStore();
+  console.log(id)
+  try{
+    const data = await sql<Suppliers>`
+      SELECT
+        id,
+        name,
+        email,
+        location,
+        organization_type,
+        industry,
+        revenue,
+        num_employees,
+        year_of_incorporation,
+        receiving_purchase_orders,
+        currency,
+        rating
+      FROM suppliers
+      WHERE id = ${id};
+    `;
+    const suppliers = data.rows.map((suppliers) => ({
+      ...suppliers,
+    }));
+    console.log(suppliers);
+    return suppliers;
+  }catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch id of supplier.');
+  }
+
+} 

@@ -44,6 +44,23 @@ const FormSupplierSchema = z.object({
       .number()
       .gt(0, { message: 'Please enter an stock greater than 0.' }),
   });
+
+
+  const FormQuotationSchema = z.object({
+    id: z.string(),
+    quotationId: z.string(),
+    quotationname: z.string({
+      invalid_type_error: 'Please select a Quotation.',
+    }),
+    suppliername: z.string({
+      invalid_type_error: 'Please select a Supplier.',
+    }),
+    status: z.enum(['denied', 'approved'], {
+      invalid_type_error: 'Please select an invoice status.',
+    }),
+    date: z.string(),
+  });
+
   
   export type State = {
     errors?: {
@@ -71,6 +88,18 @@ const FormSupplierSchema = z.object({
     };
     message?: string | null;
   };
+
+  export type QuotationState =  {
+    errors?: {
+      quotationId?: string[];
+      quotationname?: string[];
+      suppliername?: string[];
+      status?: string[];
+      date?: string[];
+    };
+    message?: string | null;
+  };
+
 
 
 const CreateInvoice = FormSchema.omit({ id: true, date: true });
@@ -546,3 +575,98 @@ export async function removeMaterial (id: string) {
   }
 }
 
+//for Quotation//
+
+
+
+const CreateQuotation = FormQuotationSchema.omit({ id: true, date: true });
+
+
+export async function Quotation(prevState: QuotationState, formData: FormData) {
+  // Validate form using Zod
+  const validatedFields = CreateQuotation.safeParse({
+    QuotationId: formData.get('quotation_id'),
+    Quotationname: formData.get('name'),
+    Suppliername: formData.get('supplier'),
+    status: formData.get('status'),
+  });
+ 
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Add Quotation.',
+    };
+  }
+ 
+  // Prepare data for insertion into the database
+  const { quotationId,quotationname,suppliername, status } = validatedFields.data;
+  const date = new Date().toISOString().split('T')[0];
+ 
+  // Insert data into the database
+  try {
+    await sql`
+      INSERT INTO materials (quotation_id, name,supplier, status)
+      VALUES (${quotationId},${quotationname}, ${suppliername}, ${status})
+    `;
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    return {
+      message: 'Database Error: Failed to Add Quotation.',
+    };
+  }
+ 
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/dashboard/quotation');
+  redirect('/dashboard/quotation');
+}
+
+
+
+const UpdateQuotation = FormQuotationSchema.omit({ id: true, date: true });
+
+export async function updateQuotation(
+  id: string,
+  prevState: QuotationState,
+  formData: FormData,
+) {
+  const validatedFields = UpdateQuotation.safeParse({
+    QuotationId: formData.get('quotation_id'),
+    Quotationname: formData.get('name'),
+    Suppliername: formData.get('supplier'),
+    status: formData.get('status'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Quotation.',
+    };
+  }
+ 
+  const { quotationId,quotationname,suppliername, status } = validatedFields.data;
+ 
+  try {
+    await sql`
+      UPDATE quotation
+      SET  quotationid = ${quotationId},name = ${quotationname}, supplier = ${suppliername}, stock = ${status}
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Quotation.' };
+  }
+ 
+  revalidatePath('/dashboard/quotation');
+  redirect('/dashboard/quotation');
+}
+
+export async function removeQuotation (id: string) {
+  
+  try {
+    await sql`DELETE FROM quotation WHERE id = ${id}`;
+    revalidatePath('/dashboard/quotation');
+    return { message: 'Removed Quotation.' };
+  } catch (error) {
+    return { message: 'Database Error: Failed to Remove Quotation.' };
+  }
+}

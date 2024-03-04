@@ -167,3 +167,31 @@ export type MaterialsTable = {
   name: string;
   stock: number;
 };
+
+
+export type QuotationField = {
+  id: string;
+  quotation_id: string;
+  name: string;
+  supplier: string;
+  date:string;
+  status:'denied' | 'approved';
+};
+
+export type QuotationTable = {
+  id: string;
+  quotation_id: string;
+  name: string;
+  supplier: string;
+  date:string;
+  status:'denied' | 'approved';
+};
+
+export type QuotationForm = {
+  id: string;
+  quotation_id: string;
+  name: string;
+  supplier: string;
+  date:string;
+  status:'denied' | 'approved';
+};

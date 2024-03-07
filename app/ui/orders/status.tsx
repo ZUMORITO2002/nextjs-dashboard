@@ -14,13 +14,13 @@ export default function OrderStatus({ status }: { status: string }) {
     >
       {status === 'pending' ? (
         <>
-          Pending
+          In Progress
           <ClockIcon className="ml-1 w-4 text-gray-500" />
         </>
       ) : null}
       {status === 'delivered' ? (
         <>
-          Paid
+          Delivered
           <CheckIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}

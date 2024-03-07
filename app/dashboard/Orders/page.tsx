@@ -1,6 +1,6 @@
 import Pagination from '@/app/ui/customers/pagination';
 import Search from '@/app/ui/search';
-import { AddOrder, AllOrder, OPOrder, DeliveredOrder, NewOrder} from '@/app/ui/orders/buttons';
+import { AddOrder} from '@/app/ui/orders/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
@@ -36,10 +36,6 @@ export default async function Page({
         <AddOrder />
       </div>
       <div className="mt-1 flex  gap-3">
-        <AllOrder />
-        <NewOrder />
-        <OPOrder />
-        <DeliveredOrder />
       </div>
        <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

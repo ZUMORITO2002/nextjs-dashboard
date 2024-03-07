@@ -6,6 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
+import { fetchFilteredOrders, fetchNewOrders, fetchOPOrders, fetchDeliveredOrders } from './data';
 
 const FormSchema = z.object({
     id: z.string(),
@@ -670,3 +671,20 @@ export async function removeQuotation (id: string) {
     return { message: 'Database Error: Failed to Remove Quotation.' };
   }
 }
+
+
+
+export async function fetchOrders(type = 'filtered', query = '', currentPage = 1) {
+  switch (type) {
+     case 'filtered':
+       return await fetchFilteredOrders(query, currentPage);
+     case 'new':
+       return await fetchNewOrders();
+     case 'op':
+       return await fetchOPOrders();
+     case 'delivered':
+       return await fetchDeliveredOrders();
+     default:
+       return await fetchFilteredOrders(query, currentPage);
+  }
+ }

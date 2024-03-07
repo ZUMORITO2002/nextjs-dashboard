@@ -20,10 +20,6 @@ export default async function SummaryTable({ id }: { id: string }) {
     {suppliers?.map((supplier) => (
       <React.Fragment key={supplier.id}>
         <tr className="border-b text-sm">
-          <td className="whitespace-nowrap py-3 pl-6 pr-3">Supplier ID </td>
-          <td className="whitespace-nowrap px-3 py-3">{supplier.id}</td>
-        </tr>
-        <tr className="border-b text-sm">
           <td className="whitespace-nowrap py-3 pl-6 pr-3">Name</td>
           <td className="whitespace-nowrap px-3 py-3">{supplier.name}</td>
         </tr>

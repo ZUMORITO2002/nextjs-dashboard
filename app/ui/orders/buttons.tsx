@@ -1,8 +1,9 @@
 'use client'
 
-import { fetchDeliveredOrders, fetchFilteredOrders, fetchNewOrders, fetchOPOrders } from '@/app/lib/data';
+import { fetchDeliveredOrders, fetchFilteredOrders, fetchNewOrders, fetchOPOrders, fetchOrders } from '@/app/lib/data';
 import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import React from 'react';
 import { useState } from 'react';
 
 export function AddOrder() {
@@ -27,88 +28,6 @@ export function UpdateOrder({ id }: { id: string }) {
       </Link>
     );
   }
-
-  export function AllOrder() {
-    // Define state variables for query and currentPage
-    const [query, setQuery] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const handleClick = async () => {
-        try {
-            // Fetch orders with the current query and currentPage
-            const orders = await fetchFilteredOrders(query, currentPage);
-            // Do something with the fetched orders
-            console.log(orders);
-        } catch (error) {
-            console.error('Failed to fetch orders:', error);
-            // Handle error
-        }
-    };
-
-    return (
-        <div className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-             onClick={handleClick}>
-            <span className="md:block">All Status</span>
-        </div>
-    );
-}
-
-  export function NewOrder() {
-   
-
-    const handleClick = () => {
-        // Toggle the visibility state
-       
-        // Assuming fetchNewOrders is a function that you want to call when the button is clicked
-        fetchNewOrders();
-    };
-
-    return (
-        <div className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-             onClick={handleClick}>
-            {/* Conditionally render the "New Order" text based on the state */}
-            <span className="md:block">New Order</span>
-        </div>
-    );
-}
-
-export function OPOrder() {
-   
-
-  const handleClick = () => {
-      // Toggle the visibility state
-     
-      // Assuming fetchNewOrders is a function that you want to call when the button is clicked
-      fetchOPOrders();
-  };
-
-  return (
-      <div className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-           onClick={handleClick}>
-          {/* Conditionally render the "New Order" text based on the state */}
-          <span className="md:block">On Progress</span>
-      </div>
-  );
-}
-
-export function DeliveredOrder() {
-   
-
-  const handleClick = () => {
-      // Toggle the visibility state
-     
-      // Assuming fetchNewOrders is a function that you want to call when the button is clicked
-      fetchDeliveredOrders();
-  };
-
-  return (
-      <div className="flex h-10 items-center rounded-lg bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-           onClick={handleClick}>
-          {/* Conditionally render the "New Order" text based on the state */}
-          <span className="md:block">Delivered</span>
-      </div>
-  );
-}
 
   export function DeleteOrder({ id }: { id: string }) {
     const deleteOrderWithId = () => DeleteOrder({ id }); 

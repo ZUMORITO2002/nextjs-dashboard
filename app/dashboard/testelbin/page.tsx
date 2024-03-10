@@ -1,44 +1,42 @@
+// testelbn/page.tsx
 "use client"
 import React, { useEffect, useState } from 'react';
-import { user } from '@/app/lib/definitions';
+import { Customer } from './types';
 
-async function getData(): Promise<user[]> {
-  const res = await fetch('http://127.0.0.1:8000/list_customers');
+const Page: React.FC = () => {
+ const [customers, setCustomers] = useState<Customer[]>([]);
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data');
-  }
-
-  return res.json();
-}
-
-export default function Page() {
-  const [data, setData] = useState<user[]>([]); // Specify the type explicitly
-
-  useEffect(() => {
+ useEffect(() => {
     const fetchData = async () => {
       try {
-        const newData = await getData();
-        setData(newData);
+        const response = await fetch('http://127.0.0.1:8000/list_customers');
+        if (!response.ok) {
+          console.error('Network response was not ok');
+          return;
+        }
+        const data: Customer[] = await response.json();
+        console.log('Fetched data:', data); // Debugging line
+        setCustomers(data);
       } catch (error) {
-        console.error('Error fetching data:', error);
-        // Handle error state
+        console.error('There was a problem with your fetch operation:', error);
       }
     };
 
     fetchData();
-  }, []);
+ }, []);
 
-  return (
+ return (
     <div>
-      {data.map((userData: user) => (
-        <div key={userData.id}>
-          <p>ID: {userData.id}</p>
-          <p>Name: {userData.name}</p>
-          <p>Email: {userData.email}</p>
-          <p>Phone Number: {userData.phone_number}</p>
-        </div>
-      ))}
+      <h1>List of Customers</h1>
+      <ul>
+        {customers.map((customer) => (
+          <li key={customer.id}>
+            {customer.name} - {customer.email} - {customer.phone_number}
+          </li>
+        ))}
+      </ul>
     </div>
-  );
-}
+ );
+};
+
+export default Page;

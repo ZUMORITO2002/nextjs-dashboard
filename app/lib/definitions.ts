@@ -18,12 +18,12 @@ export type Customer = {
 
 export type Invoice = {
   id: string;
-  customer_id: string;
-  amount: number;
+  order_id: string;
+  invoice_amount: number;
+  address: string;
   date: string;
-  // In TypeScript, this is called a string union type.
-  // It means that the "status" property can only be one of the two strings: 'pending' or 'paid'.
-  status: 'pending' | 'paid';
+  customer_name: string;
+  order_status: 'unpaid' | 'paid';
 };
 
 export type Revenue = {
@@ -194,18 +194,9 @@ export type QuotationForm = {
   supplier: string;
   date:string;
   status:'denied' | 'approved';
-<<<<<<< Updated upstream
-};
-=======
+
 };
 
-export type user = {
-  id: number;
-  name: string;
-  email: string;
-  phone_number: string;
-}
 
 
 
->>>>>>> Stashed changes

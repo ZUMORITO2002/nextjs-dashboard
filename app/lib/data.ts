@@ -20,6 +20,7 @@ import {
   QuotationTable,
   QuotationForm,
   Suppliers,
+  Invoice,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -740,6 +741,30 @@ export async function fetchSuppliersById(id: string){
   }
 
 } 
+
+export async function fetchInvoices(query: string) {
+  noStore();
+  try {
+    const data = await sql<Invoice>`
+      SELECT
+        id,
+        order_id,
+        invoice_amount,
+        address,
+        date,
+        customer_name,
+        order_status
+      FROM invoices
+      ORDER BY order_id
+    `;
+
+    const invoices = data.rows;
+    return invoices;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all invoices.');
+  }
+}
 
 
 

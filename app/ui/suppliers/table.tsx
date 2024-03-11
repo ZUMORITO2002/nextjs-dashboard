@@ -1,38 +1,74 @@
+'use client'
+
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { EditSupplier, RemoveSupplier, SummarySupplier } from '@/app/ui/suppliers/buttons';
+import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredSuppliers} from '@/app/lib/data';
+import { fetchInvoices } from '@/app/lib/data'; 
+import {  Supplier } from '@/app/lib/definitions';
 
-export default async function SuppliersTable({
-  query,
+
+export default function Supplier({
+ query,
+ currentPage,
 }: {
-  query: string;
+ query: string;
+ currentPage: number;
 }) {
-  const suppliers = await fetchFilteredSuppliers(query);
+ const [suppliers, setsuppliers] = useState<Supplier[]>([]);
 
-  return (
+ useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/list_suppliers');
+        if (!response.ok) {
+          console.error('Network response was not ok');
+          return;
+        }
+        const data: Supplier[] = await response.json();
+        console.log('Fetched data:', data); // Debugging line
+        setsuppliers(data);
+      } catch (error) {
+        console.error('There was a problem with your fetch operation:', error);
+      }
+    };
+
+    fetchData();
+ }, []); // Empty dependency array means this effect runs once on component mount
+
+ return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {suppliers?.map((supplier) => (
+            {suppliers.map((supplier) => (
               <div
                 key={supplier.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
-                  <div>
+                 <div>
                     <div className="mb-2 flex items-center">
-                      <p>{supplier.name}</p>
+                      <p>{supplier.id}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{supplier.email}</p>
-                  </div>
+                    <p className="text-sm text-gray-500">{supplier.supplier_name}</p>
+                 </div>
+                 <div className="mb-2 flex items-center">
+                    <p>{supplier.email}</p>
+                 </div>
+                 <div className="mb-2 flex items-center">
+                    <p>{supplier.phone}</p>
+                 </div>
+                 <div className="mb-2 flex items-center">
+                    <p>{supplier.rating}</p>
+                 </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
-                  <div className="flex justify-end gap-2">
+                 <div className="flex justify-end gap-2">
                     <EditSupplier id={supplier.id} />
                     <RemoveSupplier id={supplier.id} />
-                  </div>
+                 </div>
                 </div>
               </div>
             ))}
@@ -41,43 +77,55 @@ export default async function SuppliersTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Supplier
+                 Supplier ID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Email
+                 Supplier Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Rating
+                 Email
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                 Phone
+                </th>
+                <th scope="col" className="px-3 py-5 font-medium">
+                 Rating
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
+                 <span className="sr-only">Edit</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {suppliers?.map((supplier) => (
+              {suppliers.map((supplier) => (
                 <tr
-                  key={supplier.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                 key={supplier.id}
+                 className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                 <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{supplier.name}</p>
+                      <p>{supplier.id}</p>
                     </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                 </td>
+                 <td className="whitespace-nowrap px-3 py-3">
+                    {supplier.supplier_name}
+                 </td>
+                 <td className="whitespace-nowrap px-3 py-3">
                     {supplier.email}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
+                 </td>
+                 <td className="whitespace-nowrap px-3 py-3">
+                    {supplier.phone}
+                 </td>
+                 <td className="whitespace-nowrap px-3 py-3">
                     {supplier.rating}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                 </td>
+                 <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <SummarySupplier id={supplier.id}/>
-                      <EditSupplier id={supplier.id} />
-                      <RemoveSupplier id={supplier.id} />
+                    <SummarySupplier id={supplier.id} />
+                    <EditSupplier id={supplier.id} />
+                    <RemoveSupplier id={supplier.id} />
                     </div>
-                  </td>
+                 </td>
                 </tr>
               ))}
             </tbody>
@@ -85,5 +133,13 @@ export default async function SuppliersTable({
         </div>
       </div>
     </div>
-  );
+ );
 }
+
+    
+
+
+
+
+
+

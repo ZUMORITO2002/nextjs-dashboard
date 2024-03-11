@@ -21,6 +21,7 @@ import {
   QuotationForm,
   Suppliers,
   Invoice,
+  Supplier,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -763,6 +764,29 @@ export async function fetchInvoices(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all invoices.');
+  }
+}
+
+export async function fetchSupplier(query: string) {
+  noStore();
+  try {
+    const data = await sql<Supplier>`
+      SELECT
+        id,
+        order_id,
+        supplier_name,
+        phone,
+        email,
+        rating
+      FROM suppliers
+      ORDER BY supplier_id
+    `;
+
+    const suppliers = data.rows;
+    return suppliers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all suppliers.');
   }
 }
 

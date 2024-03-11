@@ -103,6 +103,14 @@ export type Suppliers = {
   rating : string;
 };
 
+export type Supplier = {
+  id: string;
+  supplier_name : string;
+  email: string;
+  phone: string; 
+  rating : string;
+};
+
 export type FormattedSuppliersTable = {
   id: string;
   name: string;

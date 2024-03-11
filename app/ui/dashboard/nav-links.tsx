@@ -28,7 +28,7 @@ const links = [
     href: '/dashboard/Suppliers',
     icon: FaTruckMoving,
   },
-  { name: 'Orders', href: '/dashboard/Orders', icon: ShoppingCartIcon },
+  { name: 'Orders', href: '/dashboard/orders', icon: ShoppingCartIcon },
   { name: 'Materials', href: '/dashboard/Materials', icon: WrenchScrewdriverIcon },
   { name: 'Quotation', href: '/dashboard/quotation', icon: DocumentTextIcon },
 ];

@@ -132,31 +132,54 @@ export type SuppliersTableType = {
 
 export type OrderForm = {
   id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'delivered';
+  order_id: string;
+  order_name: string;
+  customer_name: string;
+  date: string;
+  order_status: 'In Progress' | 'Finished';
 };
 
 export type OrdersTable = {
   id: string;
-  customer_id: string;
-  name: string;
-  location: string;
+  order_id: string;
+  order_name: string;
+  customer_name: string;
   date: string;
-  amount: number;
-  status: 'pending' | 'delivered';
+  order_status: 'In Progress' | 'Finished';
 };
 
 export type OrdersField = {
   id: string;
-  name: string;
+  order_id: string;
+  order_name: string;
+  customer_name: string;
+  date: string;
+  order_status: 'In Progress' | 'Finished';
+};
+
+
+
+export type Orders = {
+  id: string;
+  order_id: string;
+  order_name: string;
+  customer_name: string;
+  date: string;
+  order_status: 'In Progress' | 'Finished';
 };
 
 export type MaterialsField = {
   id: string;
-  materials_id: string;
-  name: string;
-  stock: number;
+  inventorys_id: string;
+  material_name: string;
+  material_amt: number;
+};
+
+export type Materials = {
+  id: string;
+  inventorys_id: string;
+  material_name: string;
+  material_amt: number;
 };
 
 
@@ -202,6 +225,15 @@ export type QuotationForm = {
   supplier: string;
   date:string;
   status:'denied' | 'approved';
+
+};
+
+export type Quotation= {
+  id: string;
+  quotation_name: string;
+  supplier_name_id: string;
+  date:string;
+  quotation_status:'Rejected' | 'Accepted'| 'Under Review';
 
 };
 

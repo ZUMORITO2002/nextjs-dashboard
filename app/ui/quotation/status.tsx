@@ -1,4 +1,4 @@
-import { CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, ClockIcon,DocumentMagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 
 export default function QuotationStatus({ status }: { status: string }) {
@@ -7,20 +7,29 @@ export default function QuotationStatus({ status }: { status: string }) {
       className={clsx(
         'inline-flex items-center rounded-full px-2 py-1 text-xs',
         {
-          'bg-gray-100 text-gray-500': status === 'denied',
-          'bg-green-500 text-white': status === 'approved',
+          'bg-red-100 text-red-500': status === 'Rejected',
+          'bg-yellow-500 text-yellow-900': status === 'Under Review',
+          'bg-green-500 text-white': status === 'Accepted',
         },
       )}
     >
-      {status === 'denied' ? (
+      {status === 'Rejected' ? (
         <>
-          Denied
-          <ClockIcon className="ml-1 w-4 text-gray-500" />
+          Rejected
+          <ClockIcon className="ml-1 w-4 text-red-500" />
         </>
       ) : null}
-      {status === 'approved' ? (
+
+      {status === 'Under Review' ? (
         <>
-          Approved
+          Under Review
+          <DocumentMagnifyingGlassIcon className="ml-1 w-4 text-gray-500" />
+        </>
+      ) : null}
+
+      {status === 'Accepted' ? (
+        <>
+          Accepted
           <CheckIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}

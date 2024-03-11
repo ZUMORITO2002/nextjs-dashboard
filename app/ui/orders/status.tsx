@@ -7,18 +7,18 @@ export default function OrderStatus({ status }: { status: string }) {
       className={clsx(
         'inline-flex items-center rounded-full px-2 py-1 text-xs',
         {
-          'bg-gray-100 text-gray-500': status === 'pending',
-          'bg-green-500 text-white': status === 'delivered',
+          'bg-gray-100 text-gray-500': status === 'In Progress',
+          'bg-green-500 text-white': status === 'Delivered',
         },
       )}
     >
-      {status === 'pending' ? (
+      {status === 'In Progress' ? (
         <>
           In Progress
           <ClockIcon className="ml-1 w-4 text-gray-500" />
         </>
       ) : null}
-      {status === 'delivered' ? (
+      {status === 'Delivered' ? (
         <>
           Delivered
           <CheckIcon className="ml-1 w-4 text-white" />

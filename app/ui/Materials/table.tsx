@@ -1,48 +1,66 @@
-'use server'
+'use client'
 
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { UpdateMaterials, RemoveMaterial } from '@/app/ui/Materials/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredMaterials } from '@/app/lib/data';
+import { fetchInvoices } from '@/app/lib/data'; 
+import {  Materials } from '@/app/lib/definitions';
 
-export default async function MaterialsTable({
-  query,
-  currentPage,
+export default function Materials({
+ query,
+ currentPage,
 }: {
-  query: string;
-  currentPage: number;
+ query: string;
+ currentPage: number;
 }) {
-  const materials = await fetchFilteredMaterials(query, currentPage);
+ const [material, setMaterials] = useState<Materials[]>([]);
 
-  return (
+ useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:8000/list_inventorys');
+        if (!response.ok) {
+          console.error('Network response was not ok');
+          return;
+        }
+        const data: Materials[] = await response.json();
+        console.log('Fetched data:', data); // Debugging line
+        setMaterials(data);
+      } catch (error) {
+        console.error('There was a problem with your fetch operation:', error);
+      }
+    };
+
+    fetchData();
+ }, []); // Empty dependency array means this effect runs once on component mount
+
+ return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {materials?.map((material) => (
+            {material.map((material) => (
               <div
                 key={material.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
-                  <div>
+                 <div>
                     <div className="mb-2 flex items-center">
-                      <p>{material.materials_id}</p>
+                      <p>{material.id}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{material.name}</p>
-                  </div>
+                    <p className="text-sm text-gray-500">{material.material_name}</p>
+                 </div>
+                 <div className="mb-2 flex items-center">
+                    <p>{material.material_amt}</p>
+                 </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
-                  <div>
-                    <p className="text-xl font-medium">
-                      {formatCurrency(material.stock)}
-                    </p>
-                  </div>
-                  <div className="flex justify-end gap-2">
+                 <div className="flex justify-end gap-2">
                     <UpdateMaterials id={material.id} />
                     <RemoveMaterial id={material.id} />
-                  </div>
+                 </div>
                 </div>
               </div>
             ))}
@@ -51,42 +69,42 @@ export default async function MaterialsTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Material ID
+                 Inventory ID
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Material Name
+                 Material Name
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  In Stock
+                 Stock
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
-                  <span className="sr-only">Edit</span>
+                 <span className="sr-only">Edit</span>
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white">
-              {materials?.map((material) => (
+              {material.map((material) => (
                 <tr
-                  key={material.id}
-                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
+                 key={material.id}
+                 className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                 <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{material.materials_id}</p>
+                      <p>{material.id}</p>
                     </div>
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {material.name}
-                  </td>
-                  <td className="whitespace-nowrap px-3 py-3">
-                    {formatCurrency(material.stock)}
-                  </td>
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                 </td>
+                 <td className="whitespace-nowrap px-3 py-3">
+                    {material.material_name}
+                 </td>
+                 <td className="whitespace-nowrap px-3 py-3">
+                    {material.material_amt}
+                 </td>
+                 <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateMaterials id={material.id} />
-                      <RemoveMaterial id={material.id} />
+                    <UpdateMaterials id={material.id} />
+                    <RemoveMaterial id={material.id} />
                     </div>
-                  </td>
+                 </td>
                 </tr>
               ))}
             </tbody>
@@ -94,5 +112,13 @@ export default async function MaterialsTable({
         </div>
       </div>
     </div>
-  );
+ );
 }
+
+    
+
+
+
+
+
+

@@ -22,6 +22,7 @@ import {
   Suppliers,
   Invoice,
   Supplier,
+  Orders,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
@@ -331,12 +332,11 @@ export async function fetchFilteredOrders(query: string, currentPage: number) {
     const orders = await sql<OrdersTable>`
     SELECT
     id,
-    customer_id,
-    name,
-    location,
+    order_id,
+    order_name,
+    customer_name,
     date,
-    amount,
-    status
+    order_status
     FROM
     orders
     ORDER BY
@@ -350,40 +350,21 @@ export async function fetchFilteredOrders(query: string, currentPage: number) {
   }
 }
 
-export async function fetchOrdersById(id: string) {
-  noStore();
-  try {
-    const data = await sql<OrderForm>`
-      SELECT
-        orders.id,
-        orders.customer_id,
-        orders.amount,
-        orders.status
-      FROM orders
-      WHERE orders.id = ${id};
-    `;
 
-    const order = data.rows.map((order) => ({
-      ...order,
-      amount: order.amount,
-    }));
-    console.log(order);
-    return order[0];
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch id of order.');
-  }
-}
 
 export async function fetchOrders() {
   noStore();
   try {
-    const data = await sql<OrdersField>`
+    const data = await sql<Orders>`
       SELECT
         id,
-        name
+        order_id,
+        order_name,
+        customer_name,
+        date,
+        order_status
       FROM orders
-      ORDER BY name ASC
+      ORDER BY order_name ASC
     `;
 
     const orders = data.rows;
@@ -401,12 +382,11 @@ export async function fetchNewOrders() {
     const orders = await sql<OrdersTable>`
     SELECT
     id,
-    customer_id,
-    name,
-    location,
+    order_id,
+    order_name,
+    customer_name,
     date,
-    amount,
-    status
+    order_status
     FROM
     orders
     ORDER BY
@@ -428,18 +408,15 @@ export async function fetchOPOrders() {
     const orders = await sql<OrdersTable>`
     SELECT
     id,
-    customer_id,
-    name,
-    location,
+    order_id,
+    order_name,
+    customer_name,
     date,
-    amount,
-    status
-    FROM
-    orders
+    order_status
     WHERE
-    status = 'pending'
+    order_status = 'In Progress'
     ORDER BY
-    status;
+    order_status;
 
 `;
 
@@ -456,18 +433,16 @@ export async function fetchDeliveredOrders() {
     const orders = await sql<OrdersTable>`
     SELECT
     id,
-    customer_id,
-    name,
-    location,
+    order_id,
+    order_name,
+    customer_name,
     date,
-    amount,
-    status
-    FROM
-    orders
+    order_status
     WHERE
-    status = 'delivered'
+    order_status = 'Finished'
     ORDER BY
-    status;
+    order_status;
+
 
 `;
 
@@ -484,16 +459,16 @@ export async function fetchMaterials() {
     const data = await sql<MaterialsField>`
     SELECT
     id,
-    materials_id,
-    name,
-    stock
-    FROM materials
+    inventorys_id,
+    material_name,
+    material_amt
+    FROM Inventorys
     ORDER BY CAST(id AS INTEGER) ASC;
 
     `;
 
-    const materials = data.rows;
-    return materials;
+    const inventorys = data.rows;
+    return inventorys;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all Materials.');

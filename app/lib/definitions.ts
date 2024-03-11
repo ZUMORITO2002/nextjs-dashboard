@@ -195,3 +195,10 @@ export type QuotationForm = {
   date:string;
   status:'denied' | 'approved';
 };
+
+export type user = {
+  id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+}

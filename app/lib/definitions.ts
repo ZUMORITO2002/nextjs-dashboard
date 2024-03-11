@@ -13,7 +13,7 @@ export type Customer = {
   id: string;
   name: string;
   email: string;
-  image_url: string;
+  phone_number: string;
 };
 
 export type Invoice = {
@@ -194,4 +194,18 @@ export type QuotationForm = {
   supplier: string;
   date:string;
   status:'denied' | 'approved';
+<<<<<<< Updated upstream
 };
+=======
+};
+
+export type user = {
+  id: number;
+  name: string;
+  email: string;
+  phone_number: string;
+}
+
+
+
+>>>>>>> Stashed changes

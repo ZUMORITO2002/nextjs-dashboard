@@ -1,49 +1,63 @@
+'use client';
 
 import Image from 'next/image';
 import { EditCustomer, RemoveCustomer } from '@/app/ui/customers/buttons';
-import InvoiceStatus from '@/app/ui/invoices/status';
+// import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
-import { fetchFilteredInvoices } from '@/app/lib/data';
 
-export default async function InvoicesTable({
+import { useEffect, useState } from 'react';
+import { Customer } from '@/app/lib/definitions';
+
+export default async function CustomerTable({
   query,
   currentPage,
 }: {
   query: string;
   currentPage: number;
 }) {
-  const invoices = await fetchFilteredInvoices(query, currentPage);
-  console.log(invoices)
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+     const fetchData = async () => {
+       try {
+         const response = await fetch('http://127.0.0.1:8000/list_customers');
+         if (!response.ok) {
+           console.error('Network response was not ok');
+           return;
+         }
+         const data: Customer[] = await response.json();
+         console.log('Fetched data:', data); // Debugging line
+         setCustomers(data);
+       } catch (error) {
+         console.error('There was a problem with your fetch operation:', error);
+       }
+     };
+ 
+     fetchData();
+  }, []);
+  console.log(customers)
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">
-            {invoices?.map((invoice) => (
+            {customers?.map((customers) => (
               <div
-                key={invoice.id}
+                key={customers.id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
                   <div>
                     <div className="mb-2 flex items-center">
-                      <Image
-                        src={invoice.image_url}
-                        className="mr-2 rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                      <p>{customers.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{invoice.email}</p>
+                    <p className="text-sm text-gray-500">{customers.email}</p>
                   </div>
-                  <InvoiceStatus status={invoice.status} />
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div className="flex justify-end gap-2">
-                    <EditCustomer id={invoice.id} />
-                    <RemoveCustomer id={invoice.id} />
+                    <EditCustomer id={customers.id} />
+                    <RemoveCustomer id={customers.id} />
                   </div>
                 </div>
               </div>
@@ -59,7 +73,7 @@ export default async function InvoicesTable({
                   Email
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Status
+                  Phone Number
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -67,33 +81,26 @@ export default async function InvoicesTable({
               </tr>
             </thead>
             <tbody className="bg-white">
-              {invoices?.map((invoice) => (
+              {customers?.map((customers) => (
                 <tr
-                  key={invoice.id}
+                  key={customers.id}
                   className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <Image
-                        src={invoice.image_url}
-                        className="rounded-full"
-                        width={28}
-                        height={28}
-                        alt={`${invoice.name}'s profile picture`}
-                      />
-                      <p>{invoice.name}</p>
+                      <p>{customers.name}</p>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {invoice.email}
+                    {customers.email}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.status} />
+                    {customers.phone_number}
                   </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <EditCustomer id={invoice.id} />
-                      <RemoveCustomer id={invoice.id} />
+                      <EditCustomer id={customers.id} />
+                      <RemoveCustomer id={customers.id} />
                     </div>
                   </td>
                 </tr>
@@ -102,6 +109,6 @@ export default async function InvoicesTable({
           </table>
         </div>
       </div>
-    </div>
+      </div>
   );
 }

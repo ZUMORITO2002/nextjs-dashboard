@@ -8,6 +8,34 @@ import { signIn } from '@/auth';
 import { AuthError } from 'next-auth';
 import { fetchFilteredOrders, fetchNewOrders, fetchOPOrders, fetchDeliveredOrders } from './data';
 
+const profileFormSchema = z.object({
+  name: z
+    .string()
+    .min(2, {
+      message: "name must be at least 2 characters.",
+    })
+    .max(30, {
+      message: "name must not be longer than 30 characters.",
+    }),
+
+  email: z
+    .string()
+    .min(2, {
+      message: "email must be at least 2 characters.",
+    })
+    .max(30, {
+      message: "email must not be longer than 30 characters.",
+    }),
+
+  phone: z.string().regex(/^\d{10}$/, {
+    message: "Phone number must be 10 digits long.",
+  }).regex(/^(\d{3}-?\d{3}-?\d{4}|\d{10})$/, {
+    message: "Phone number must be in the format XXX-XXX-XXXX or XXXXXXXXXX.",
+  }),
+})
+
+ type ProfileFormValues = z.infer<typeof profileFormSchema>
+
 const FormSchema = z.object({
     id: z.string(),
     customerId: z.string({
@@ -213,12 +241,16 @@ export async function deleteInvoice(id: string) {
 
   //for Customers //
 
-  const AddCustomer = FormSchema.omit({ id: true, date: true });
-  export async function addCustomer (prevState: State, formData: FormData) {
+
+
+  const AddCustomer = profileFormSchema.omit({ name: true, email: true, phone:true });
+  export async function addCustomer (formData: FormData) {
     // Validate form using Zod
     const validatedFields = AddCustomer .safeParse({
-      customerId: formData.get('customerId'),
-      status: formData.get('status'),
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone_number'),
+
     });
    
     // If form validation fails, return errors early. Otherwise, continue.
@@ -230,26 +262,26 @@ export async function deleteInvoice(id: string) {
     }
    
     // Prepare data for insertion into the database
-    const { customerId, status } = validatedFields.data;
-    const date = new Date().toISOString().split('T')[0];
    
-    // Insert data into the database
+    
     try {
-      await sql`
-        INSERT INTO customers (customer_id, status, date)
-        VALUES (${customerId}, ${status}, ${date})
-      `;
-    } catch (error) {
-      // If a database error occurs, return a more specific error.
-      return {
-        message: 'Database Error: Failed to Add Customer .',
-      };
-    }
+      console.log("I loved JAG once ")
+      const response = await axios.post('http://localhost:8000/create_customer', validatedFields);
+      console.log(response.data);
+      // revalidatePath('/dashboard/customers');
+      // redirect('/dashboard/customers');
+      return response.data;
+   } catch (error) {
+      console.error('Error creating customer:', error);
+      throw error;
+   }
    
     // Revalidate the cache for the invoices page and redirect the user.
-    revalidatePath('/dashboard/customers');
-    redirect('/dashboard/customers');
+    
   }
+
+
+
 
 const UpdateCustomer = FormSchema.omit({ id: true, date: true });
 
@@ -688,3 +720,29 @@ export async function fetchOrders(type = 'filtered', query = '', currentPage = 1
        return await fetchFilteredOrders(query, currentPage);
   }
  }
+
+
+
+
+
+
+ import axios from 'axios';
+
+interface Customer {
+ name: string;
+ email: string;
+ phone_number: string;
+}
+
+const createCustomer = async (customer: Customer) => {
+ try {
+    const response = await axios.post('http://localhost:8000/create_customer/', customer);
+    console.log(response.data);
+    return response.data;
+ } catch (error) {
+    console.error('Error creating customer:', error);
+    throw error;
+ }
+};
+
+export { createCustomer };

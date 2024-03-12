@@ -53,6 +53,9 @@ export default async function CustomerTable({
                     </div>
                     <p className="text-sm text-gray-500">{customers.email}</p>
                   </div>
+                  <div className="mb-2 flex items-center">
+                      <p>{customers.phone_number}</p>
+                    </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                   <div className="flex justify-end gap-2">

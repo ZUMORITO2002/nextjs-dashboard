@@ -192,7 +192,8 @@ export async function fetchCustomers() {
     const data = await sql<CustomerField>`
       SELECT
         id,
-        name
+        name,
+        phone_number
       FROM customers
       ORDER BY name ASC
     `;

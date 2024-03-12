@@ -98,7 +98,7 @@ export default async function Order({
                     <p className="text-sm text-gray-500">{order.order_name}</p>
                   </div>
                   <div className="mb-2 flex items-center">
-                      <p>{order.customer_name}</p>
+                      <p>{order.customer}</p>
                     </div>
                     <div className="mb-2 flex items-center">
                       <p>{order.date}</p>
@@ -154,7 +154,7 @@ export default async function Order({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {order.customer_name}
+                    {order.customer}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {order.date}

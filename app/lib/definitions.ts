@@ -78,6 +78,7 @@ export type FormattedCustomersTable = {
 export type CustomerField = {
   id: string;
   name: string;
+  phone_number: string;
 };
 
 export type InvoiceForm = {
@@ -105,6 +106,7 @@ export type Suppliers = {
 
 export type Supplier = {
   id: string;
+  supplier_id: string;
   supplier_name : string;
   email: string;
   phone: string; 
@@ -163,21 +165,21 @@ export type Orders = {
   id: string;
   order_id: string;
   order_name: string;
-  customer_name: string;
+  customer: string;
   date: string;
   order_status: 'In Progress' | 'Finished';
 };
 
 export type MaterialsField = {
   id: string;
-  inventorys_id: string;
+  material_id: string;
   material_name: string;
   material_amt: number;
 };
 
 export type Materials = {
   id: string;
-  inventorys_id: string;
+  material_id: string;
   material_name: string;
   material_amt: number;
 };
@@ -229,9 +231,10 @@ export type QuotationForm = {
 };
 
 export type Quotation= {
-  id: string;
+  id:string;
+  qoutation_id: string;
   quotation_name: string;
-  supplier_name_id: string;
+  supplier_name: string;
   date:string;
   quotation_status:'Rejected' | 'Accepted'| 'Under Review';
 

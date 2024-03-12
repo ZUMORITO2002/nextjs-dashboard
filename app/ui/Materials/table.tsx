@@ -48,7 +48,7 @@ export default function Materials({
                 <div className="flex items-center justify-between border-b pb-4">
                  <div>
                     <div className="mb-2 flex items-center">
-                      <p>{material.id}</p>
+                      <p>{material.material_id}</p>
                     </div>
                     <p className="text-sm text-gray-500">{material.material_name}</p>
                  </div>
@@ -90,7 +90,7 @@ export default function Materials({
                 >
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex items-center gap-3">
-                      <p>{material.id}</p>
+                      <p>{material.material_id}</p>
                     </div>
                  </td>
                  <td className="whitespace-nowrap px-3 py-3">

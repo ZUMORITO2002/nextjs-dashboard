@@ -16,6 +16,15 @@ export type Customer = {
   phone_number: string;
 };
 
+export type Employee = {
+  employee_id:string;
+  id: string;
+  name: string;
+  address: string;
+  phone_number: string;
+  date: string;
+};
+
 export type Invoice = {
   id: string;
   order_id: string;

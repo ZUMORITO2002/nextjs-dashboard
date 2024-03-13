@@ -50,7 +50,7 @@ export function ProfileForm() {
     const submitForm = async () => {
       try {
         // Replace with your actual API call logic
-        const response = await fetch('http://localhost:8000/create_customer', {
+        const response = await fetch('http://localhost:8000/create_employees', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
@@ -86,7 +86,7 @@ export function ProfileForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Customer name</FormLabel>
+              <FormLabel>Emploee name</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -98,7 +98,7 @@ export function ProfileForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>Address</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -123,7 +123,7 @@ export function ProfileForm() {
         />
 
 
-        <Button type="submit">Add Customer</Button>
+        <Button type="submit">Add Employee</Button>
       </form>
     </Form>
   )

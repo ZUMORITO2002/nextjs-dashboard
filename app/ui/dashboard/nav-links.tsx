@@ -7,7 +7,8 @@ import {
   BanknotesIcon,
   WrenchScrewdriverIcon,
   ShoppingCartIcon,
-  DocumentTextIcon
+  DocumentTextIcon,
+  UsersIcon
 } from '@heroicons/react/24/outline';
 
 import { FaTruckMoving } from "react-icons/fa";
@@ -31,6 +32,7 @@ const links = [
   { name: 'Orders', href: '/dashboard/orders', icon: ShoppingCartIcon },
   { name: 'Materials', href: '/dashboard/Materials', icon: WrenchScrewdriverIcon },
   { name: 'Quotation', href: '/dashboard/quotation', icon: DocumentTextIcon },
+  { name: 'Employees', href: '/dashboard/employees', icon: UsersIcon },
 ];
 
 export default function NavLinks() {

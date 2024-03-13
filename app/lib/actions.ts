@@ -22,6 +22,21 @@ const FormSchema = z.object({
     date: z.string(),
   });
 
+  const FormEmployee = z.object({
+    id: z.string(),
+    employeeId: z.string(),
+    employeename: z.string({
+      invalid_type_error: 'Please select a Emplaoyee.',
+    }),
+    employeeaddress: z.string({
+      invalid_type_error: 'Please enter the address of the  Employee.',
+    }),
+    phone: z.coerce
+      .number()
+      .gt(0, { message: 'Please enter an phone number of !0 digit.' }),
+    date: z.string(),
+  });
+
 const FormSupplierSchema = z.object({
     id: z.string(),
     suppliername: z.string({
@@ -68,6 +83,17 @@ const FormSupplierSchema = z.object({
       customerId?: string[];
       amount?: string[];
       status?: string[];
+    };
+    message?: string | null;
+  };
+
+  export type EmployeeState = {
+    errors?: {
+      employeeId?: string[];
+      name?: string[];
+      address?: string[];
+      phone?: string[];
+      date?: string[];
     };
     message?: string | null;
   };
@@ -688,3 +714,99 @@ export async function fetchOrders(type = 'filtered', query = '', currentPage = 1
        return await fetchFilteredOrders(query, currentPage);
   }
  }
+
+
+
+
+ 
+  //for Employees //
+
+  const AddEmployee = FormEmployee.omit({ id: true, date: true });
+  export async function addEmployee (prevState: EmployeeState, formData: FormData) {
+    // Validate form using Zod
+    const validatedFields = AddEmployee .safeParse({
+      EmployeeId: formData.get('EmployeeId'),
+      Employeename: formData.get('Employeename'),
+      Employeeaddress: formData.get('Employeeaddress'),
+      phone: formData.get('phone'),
+      date: formData.get('date'),
+    });
+   
+    // If form validation fails, return errors early. Otherwise, continue.
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Add Employee .',
+      };
+    }
+   
+    // Prepare data for insertion into the database
+    const { employeeId, employeename,employeeaddress,phone} = validatedFields.data;
+    const date = new Date().toISOString().split('T')[0];
+   
+    // Insert data into the database
+    try {
+      await sql`
+        INSERT INTO employees (employee_id, employeename,employeeaddress,phone date)
+        VALUES (${employeeId},  ${employeename},${employeeaddress},${phone},${date})
+      `;
+    } catch (error) {
+      // If a database error occurs, return a more specific error.
+      return {
+        message: 'Database Error: Failed to Add Employee .',
+      };
+    }
+   
+    // Revalidate the cache for the invoices page and redirect the user.
+    revalidatePath('/dashboard/employees');
+    redirect('/dashboard/employees');
+  }
+
+const UpdateEmployee = FormEmployee.omit({ id: true, date: true });
+
+export async function updateEmployee(
+  id: string,
+  prevState: EmployeeState,
+  formData: FormData,
+) {
+  const validatedFields = UpdateEmployee.safeParse({
+    EmployeeId: formData.get('EmployeeId'),
+    Employeename: formData.get('Employeename'),
+    Employeeaddress: formData.get('Employeeaddress'),
+    phone: formData.get('phone'),
+    date: formData.get('date'),
+  });
+ 
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Employee.',
+    };
+  }
+ 
+  const { employeeId, employeename,employeeaddress,phone } = validatedFields.data;
+ 
+  try {
+    await sql`
+      UPDATE invoices
+      SET employeeId = ${employeeId}, employeename = ${employeename}, employeeaddress= ${employeeaddress}, phone  = ${phone }
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Employee.' };
+  }
+ 
+  revalidatePath('/dashboard/employees');
+  redirect('/dashboard/employees');
+}
+
+  export async function removeEmployee (id: string) {
+  
+      try {
+        await sql`DELETE FROM employee WHERE id = ${id}`;
+        revalidatePath('/dashboard/employees');
+        return { message: 'Removed employees.' };
+      } catch (error) {
+        return { message: 'Database Error: Failed to Remove Employee.' };
+      }
+    }

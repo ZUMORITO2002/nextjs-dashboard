@@ -66,8 +66,8 @@ export default function Supplier({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
-                    <EditSupplier id={supplier.id} />
-                    <RemoveSupplier id={supplier.id} />
+                    <EditSupplier id={supplier.supplier_id} />
+                    <RemoveSupplier id={supplier.supplier_id} />
                  </div>
                 </div>
               </div>
@@ -122,8 +122,8 @@ export default function Supplier({
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                     <SummarySupplier id={supplier.id} />
-                    <EditSupplier id={supplier.id} />
-                    <RemoveSupplier id={supplier.id} />
+                    <EditSupplier id={supplier.supplier_id} />
+                    <RemoveSupplier id={supplier.supplier_id} />
                     </div>
                  </td>
                 </tr>

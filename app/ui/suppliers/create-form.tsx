@@ -1,88 +1,92 @@
 "use client"
 
-import Link from "next/link"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
+import {  useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+
 import { Input } from "@/components/ui/input"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
 import { toast } from "@/components/ui/use-toast"
+import { addCustomer } from "@/app/lib/actions"
 
 const profileFormSchema = z.object({
-  username: z
-    .string()
-    .min(2, {
-      message: "Username must be at least 2 characters.",
-    })
-    .max(30, {
-      message: "Username must not be longer than 30 characters.",
-    }),
+  supplier_name: z
+    .string(),
+
   email: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
+    .string(),
+
+  phone: z
+    .string(),
+
+  rating: z.string(),
+  organization: z.string(),
+  location: z.string(),
+  year: z.string(),
+  purchase: z.string(),
 })
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+ type ProfileFormValues = z.infer<typeof profileFormSchema>
 
-// This can come from your database or API.
-const defaultValues: Partial<ProfileFormValues> = {
-  bio: "I own a computer.",
-  urls: [
-    { value: "https://shadcn.com" },
-    { value: "http://twitter.com/shadcn" },
-  ],
-}
 
-export function SuppliersProfileForm() {
+export function ProfileForm() {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
     mode: "onChange",
+    defaultValues: {
+      supplier_name: "",
+      email: "",
+      phone: "",
+      rating: "",
+      organization: "",
+      location: "",
+      year: "",
+      purchase: "",
+    },
   })
+  
 
-  const { fields, append } = useFieldArray({
-    name: "urls",
-    control: form.control,
-  })
 
   function onSubmit(data: ProfileFormValues) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
+    const submitForm = async () => {
+      try {
+        // Replace with your actual API call logic
+        const response = await fetch('http://localhost:8000/create_suppliers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to submit form');
+        }
+  
+        // Handle successful response (e.g., show success toast)
+        toast({
+          title: "Form submitted successfully!",
+          description: "Supplier added successfully!",
+        });
+        form.reset(); // Reset the form
+      } catch (error) {
+        // Handle errors (e.g., show error toast)
+        toast({
+          title: "Failed to submit form.",
+          description: "Please check your input and try again.",
+        });
+      }
+    };
+  
+    submitForm();
   }
 
   return (
@@ -90,164 +94,111 @@ export function SuppliersProfileForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <FormField
           control={form.control}
-          name="username"
+          name="supplier_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name of the Organization</FormLabel>
+              <FormLabel>Supplier name</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input {...field} />
               </FormControl>
-              <FormDescription>
-                This is the company name
-              </FormDescription>
-              <FormMessage />
             </FormItem>
           )}
         />
-       <FormField
+        <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>E-mail of the Organization</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="example@gmail.com"  />
+                <Input {...field} />
               </FormControl>
-              <FormDescription>
-                Please Enter a valid E-mail address
-              </FormDescription>
-              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone Number</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {/* {form.formState.errors.phone && (
+                <FormMessage>{form.formState.errors.phone.message}</FormMessage>
+              )} */}
             </FormItem>
           )}
         />
           <FormField
           control={form.control}
-          name="bio"
+          name="rating"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Location of the Organization</FormLabel>
+              <FormLabel>Rating</FormLabel>
               <FormControl>
-                <Input placeholder="Location of the Organization"  />
+                <Input {...field} />
               </FormControl>
-              <FormDescription>
-                Please Enter a valid address
-              </FormDescription>
-              <FormMessage />
             </FormItem>
           )}
         />
-       
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization Type</FormLabel>
-              <FormControl>
-                <Input placeholder="Private Company(LTD)"  />
-              </FormControl>
-              <FormDescription>
-                Please Enter if your company is private or public
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-              )}
-            />
-            
-            
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Please Enter Your Industry</FormLabel>
-              <FormControl>
-                <Input placeholder="Fabrication" />
-              </FormControl>
-              <FormDescription>
-                Enter Your Industry Type
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-              )}
-            />
-
-            
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Year Of Incorporation</FormLabel>
-              <FormControl>
-                <Input placeholder="1969"  />
-              </FormControl>
-              <FormDescription>
-                Please Enter a year 
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-              )}
-            />
-            
 
         <FormField
           control={form.control}
-          name="bio"
+          name="organization"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Receiving Purchase Orders </FormLabel>
+              <FormLabel>Organization</FormLabel>
               <FormControl>
-                <Input placeholder="Email,Bill,Invoices"  />
+                <Input {...field} />
               </FormControl>
-              <FormDescription>
-                Please Enter how to receive purchase orders
-              </FormDescription>
-              <FormMessage />
             </FormItem>
-              )}
-            />
-            
+          )}
+        />
 
-            
-        <FormField
+          <FormField
           control={form.control}
-          name="bio"
+          name="location"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Receiving Payments </FormLabel>
+              <FormLabel>Location</FormLabel>
               <FormControl>
-                <Input placeholder="Cash,UPI,Etc..." />
+                <Input {...field} />
               </FormControl>
-              <FormDescription>
-                Please Enter how to receive payments
-              </FormDescription>
-              <FormMessage />
             </FormItem>
-              )}
-            />
-           
-            
-        <FormField
-          control={form.control}
-          name="bio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Currencies </FormLabel>
-              <FormControl>
-                <Input placeholder="INR,USD"/>
-              </FormControl>
-              <FormDescription>
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-              )}
-            />
-            
+          )}
+        />
 
-          
-        
-        <Button type="submit">Create profile</Button>
+
+          <FormField
+          control={form.control}
+          name="year"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Year</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+
+          <FormField
+          control={form.control}
+          name="purchase"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Purchase</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Add Supplier</Button>
       </form>
     </Form>
   )

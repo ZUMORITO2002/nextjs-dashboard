@@ -21,8 +21,9 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { addCustomer } from "@/app/lib/actions"
 
+let global_id = "";
+
 const profileFormSchema = z.object({
-  id: z.string(),
   name: z.string(),
   email: z.string(),
   phone_number: z.string(),
@@ -45,6 +46,8 @@ export default function EditCustomerForm({ customerId }: { customerId: string })
   
         const customerData = await response.json();
         console.log("this is id ",customerData.id)
+        console.log("this is name", customerData.name)
+        global_id = customerData.id;
         return {
           id: customerData.id, // Ensure ID is included in the returned object
           name: customerData.name,
@@ -67,11 +70,21 @@ export default function EditCustomerForm({ customerId }: { customerId: string })
 
   async function onSubmit(data: ProfileFormValues) {
     console.log("Button Was Clicked")
+    console.log("This is data variable", data)
+    // data.id = global_id
+    console.log("This is global" + global_id)
+    let new_data ={
+        id : global_id,
+        name : data.name,
+        email : data.email,
+        phone_number : data.phone_number
+    }
+    console.log("This is new data" + new_data)
     try {
       const response = await fetch(`http://localhost:8000/update_customer`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(new_data),
       });
 
       if (!response.ok) {

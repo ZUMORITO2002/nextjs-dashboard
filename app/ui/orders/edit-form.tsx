@@ -38,7 +38,7 @@ export default function EditOrderForm({
               id="customer"
               name="customerId"
               className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={order.customer_id}
+              defaultValue={order.customer_name}
             >
               <option value="" disabled>
                 Select a customer
@@ -87,7 +87,7 @@ export default function EditOrderForm({
                 name="amount"
                 type="number"
                 step="0.01"
-                defaultValue={order.amount}
+                defaultValue={order.order_name}
                 placeholder="Enter amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
               />
@@ -109,7 +109,7 @@ export default function EditOrderForm({
                   name="status"
                   type="radio"
                   value="pending"
-                  defaultChecked={order.status === 'pending'}
+                  defaultChecked={order.order_status === 'In Progress'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
@@ -125,7 +125,7 @@ export default function EditOrderForm({
                   name="status"
                   type="radio"
                   value="delivered"
-                  defaultChecked={order.status === 'delivered'}
+                  defaultChecked={order.order_status === 'Finished'}
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label

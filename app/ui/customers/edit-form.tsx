@@ -152,6 +152,7 @@ export default function EditCustomerForm({ customerId }: { customerId: string })
         />
 
       <Button type="submit">Update Customer</Button>
+      
       </form>
     </Form>
   );

@@ -21,8 +21,9 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { addCustomer } from "@/app/lib/actions"
 
-const profileFormSchema = z.object({
-  supplier_id: z.string(),
+let global_supplier_id = "";
+
+const supplierFormSchema = z.object({
   supplier_name: z.string(),
   email: z.string(),
   phone: z.string(),
@@ -33,11 +34,11 @@ const profileFormSchema = z.object({
   purchase: z.string(),
 });
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+type supplierFormValues = z.infer<typeof supplierFormSchema>
 
 export default function EditSupplierForm({ supplierId }: { supplierId: string }) {
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+  const form = useForm<supplierFormValues>({
+    resolver: zodResolver(supplierFormSchema),
     mode: "onChange",
     defaultValues: async () => {
       try {
@@ -50,6 +51,8 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
   
         const supplierData = await response.json();
         console.log("this is id ",supplierData.supplier_id)
+        global_supplier_id = supplierData.supplier_id;
+        console.log("first golbal supplier id is ", global_supplier_id)
         return {
           supplier_id: supplierData.supplier_id, // Ensure ID is included in the returned object
           supplier_name: supplierData.supplier_name,
@@ -80,13 +83,28 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
     },
   });
 
-  async function onSubmit(data: ProfileFormValues) {
+  async function onSubmit(data: supplierFormValues) {
     console.log("Button Was Clicked")
+    console.log("This is data variable", data)
+    // data.id = global_id
+    console.log("This is global" + global_supplier_id)
+    let new_data ={
+        id : global_supplier_id,
+        supplier_name : data.supplier_name,
+        email : data.email,
+        phone: data.phone,
+        rating: data.rating,
+        organiztion: data.organization,
+        location: data.location,
+        year: data.year,
+        purchase: data.purchase
+    }
+    console.log("This is new data" + new_data)
     try {
       const response = await fetch(`http://localhost:8000/update_suppliers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(new_data),
       });
 
       if (!response.ok) {
@@ -174,7 +192,7 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
           name="organization"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Organization</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -190,7 +208,7 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
           name="location"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Location</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -206,7 +224,7 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
           name="year"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Year</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -222,7 +240,7 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
           name="purchase"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Phone Number</FormLabel>
+              <FormLabel>Purchase</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -238,3 +256,6 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
     </Form>
   );
 } 
+
+
+

@@ -39,9 +39,21 @@ export function EditSupplier({ id }: { id: string }) {
 }
 
 export function RemoveSupplier({ id }: { id: string }) {
-  const removeSupplierWithId = removeSupplier.bind(null, id);
+  console.log("This is the supplier's id ", id)
+  // const removeSupplierWithId = removeSupplier.bind(null, id);
+  const removeSupplierWithId = async () =>{
+    
+    const response = await fetch(`http://localhost:8000/delete_supplier/${id}/`,{
+      method: 'DELETE',
+      // headers: { 'Content-Type': 'application/json' },
+      // body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete supplier');
+    }
+  }
   return (
-    <form action={removeSupplierWithId}>
+    <form onSubmit={removeSupplierWithId}>
     <>
       <button className="rounded-md border p-2 hover:bg-blue-600">
         <span className="sr-only">Delete</span>

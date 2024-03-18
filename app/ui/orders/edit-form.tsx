@@ -1,100 +1,157 @@
-'use client';
+"use client"
 
-import { updateOrder } from '@/app/lib/actions';
-import { CustomerField, OrderForm } from '@/app/lib/definitions';
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+// ... other imports
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { Button } from "@/components/ui/button"
+
 import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  UserCircleIcon,
-} from '@heroicons/react/24/outline';
-import Link from 'next/link';
-import { Button } from '@/app/ui/button';
-import { useFormState } from 'react-dom';
-import DocumentTextIcon from '@heroicons/react/20/solid/DocumentTextIcon';
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 
-export default function EditOrderForm({
-  order,
-  customers,
-}: {
-  order: OrderForm;
-  customers: CustomerField[];
-}) {
-  const initialState = { message: null, errors: {} };
-  const updateOrderWithId = updateOrder.bind(null, order.id);
-  const [state, dispatch] = useFormState(updateOrderWithId, initialState);
- 
+import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
+import { addCustomer } from "@/app/lib/actions"
+import { CheckIcon, ClockIcon } from "lucide-react";
+
+let global_id = "";
+
+const OrderFormSchema = z.object({
+  customer_name: z.string(),
+  order_name: z.string(),
+  order_status: z.string(),
+});
+
+type OrderFormValues = z.infer<typeof OrderFormSchema>
+
+export default function EditCustomerForm({ orderId }: { orderId: string }) {
+  const form = useForm<OrderFormValues>({
+    resolver: zodResolver(OrderFormSchema),
+    mode: "onChange",
+    defaultValues: async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/get_order/${orderId}`);
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch customer data");
+        }
+  
+        const orderData = await response.json();
+        console.log("this is id ",orderData.id)
+        console.log("this is name", orderData.customer_name)
+        global_id = orderData.id;
+        return {
+          // id: orderData.id, // Ensure ID is included in the returned object
+          customer_name: orderData.customer_name,
+          order_name: orderData.order_name,
+          order_status: orderData.order_status,
+        };
+        return orderData; // Return the fetched customer data
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+        // Handle errors (e.g., show error message)
+        return {
+          order_name: "",
+          customer_name: "",
+          order_status: "", // Set defaults if fetching fails
+        };
+      }
+    },
+  });
+
+  // const customer_name = document.getElementById('customer_name') ;
+  // const order_name = (document.getElementsByName('order_name') as HTMLInputElement)?.value;
+  const statusRadios = document.getElementsByName('order_status');
+  let order_status = '';
+  for (let i = 0; i < statusRadios.length; i++) {
+      if ((statusRadios[i] as HTMLInputElement).checked) {
+          order_status = (statusRadios[i] as HTMLInputElement).value;
+          break;
+      }
+  }
+
+  // console.log("Customer Name:", customer_name);
+  // console.log("Order Name:", order_name);
+  console.log("Status:", order_status);
+
+  const data1 = {
+    order_status: order_status
+  }
+
+
+  async function onSubmit(data: OrderFormValues) {
+    console.log("Button Was Clicked")
+    console.log("This is data variable", data)
+    // data.id = global_id
+    console.log("This is global" + global_id)
+    let new_data ={
+        order_id : global_id,
+        order_name : data.order_name,
+        order_status : data1.order_status
+    }
+    console.log("This is new data" + new_data)
+    try {
+      const response = await fetch(`http://localhost:8000/update_order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(new_data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update customer");
+      }
+
+      // Handle successful response (e.g., show success toast)
+      toast({
+        title: "Customer updated successfully!",
+        description: "Customer information has been updated.",
+      });
+      // Navigate back or handle success as needed
+    } catch (error) {
+      // Handle errors (e.g., show error toast)
+      toast({
+        title: "Failed to update customer.",
+        description: "Please try again or contact support.",
+      });
+    }
+  }
+
   return (
-    <form action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-
-        {/* Customer Name */}
-        <div className="mb-4">
-          <label htmlFor="customer" className="mb-2 block text-sm font-medium">
-            Choose customer
-          </label>
-          <div className="relative">
-            <select
-              id="customer"
-              name="customerId"
-              className="peer block w-full cursor-pointer rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={order.customer_id}
-            >
-              <option value="" disabled>
-                Select a customer
-              </option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-        </div>
-
-
-        {/* Order Description */}
-        <div className="mb-4">
-  <label htmlFor="description" className="mb-2 block text-sm font-medium">
-    Enter the description
-  </label>
-  <div className="relative mt-2 rounded-md">
-    <div className="relative">
-      <input
-        id="description"
-        name="description"
-        type="text"
-        placeholder="Enter description"
-        className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-        required
-      />
-      <DocumentTextIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-    </div>
-  </div>
-</div>
-
-
-        {/* Order  Amount */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Choose an amount
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.01"
-                defaultValue={order.amount}
-                placeholder="Enter amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              />
-              <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-        </div>
+    <Form {...form}>
+      {/* Form fields for name, email, phone_number (same as create-customer) */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="customer_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Customer name</FormLabel>
+              <FormControl>
+                <Input {...field} readOnly/>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="order_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Order Name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
         {/* Order Status */}
         <fieldset>
@@ -106,10 +163,9 @@ export default function EditOrderForm({
               <div className="flex items-center">
                 <input
                   id="pending"
-                  name="status"
                   type="radio"
-                  value="pending"
-                  defaultChecked={order.status === 'pending'}
+                  value="In Progress"
+                  {...form.register('order_status')} // Register the radio button with React Hook Form
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
@@ -122,35 +178,24 @@ export default function EditOrderForm({
               <div className="flex items-center">
                 <input
                   id="delivered"
-                  name="status"
                   type="radio"
-                  value="delivered"
-                  defaultChecked={order.status === 'delivered'}
+                  value="Finished"
+                  {...form.register('order_status')} // Register the radio button with React Hook Form
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
                   htmlFor="delivered"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Completed <CheckIcon className="h-4 w-4" />
+                  Finished <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>
           </div>
         </fieldset>
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/orders"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Edit Order</Button>
-      </div>
-    </form>
+
+      <Button type="submit">Update Order</Button>
+      </form>
+    </Form>
   );
-
-}
-
-    
+} 

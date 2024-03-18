@@ -189,16 +189,15 @@ export async function fetchInvoiceById(id: string) {
 export async function fetchCustomers() {
   noStore();
   try {
-    const data = await sql<CustomerField>`
-      SELECT
-        id,
-        name,
-        phone_number
-      FROM customers
-      ORDER BY name ASC
-    `;
+    const response = await fetch('http://127.0.0.1:8000/list_customers');
+    const responseData = await response.json();
+    const customers: CustomerField[] = responseData.map((item: any) => ({
+      id: item.id,
+      name: item.name,
+      age: item.age,
+      // Map other properties as needed
+  }));
 
-    const customers = data.rows;
     return customers;
   } catch (err) {
     console.error('Database Error:', err);

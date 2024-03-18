@@ -142,29 +142,23 @@ export type SuppliersTableType = {
 };
 
 export type OrderForm = {
-  id: string;
   order_id: string;
   order_name: string;
   customer_name: string;
-  date: string;
   order_status: 'In Progress' | 'Finished';
 };
 
 export type OrdersTable = {
-  id: string;
   order_id: string;
   order_name: string;
   customer_name: string;
-  date: string;
   order_status: 'In Progress' | 'Finished';
 };
 
 export type OrdersField = {
-  id: string;
   order_id: string;
   order_name: string;
   customer_name: string;
-  date: string;
   order_status: 'In Progress' | 'Finished';
 };
 
@@ -172,7 +166,6 @@ export type OrdersField = {
 
 export type Orders = {
   id: string;
-  order_id: string;
   order_name: string;
   customer: string;
   date: string;

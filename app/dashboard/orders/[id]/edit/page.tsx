@@ -19,10 +19,10 @@ export default async function Page({ params }: { params: { id: string } }) {
     <main>
       <Breadcrumbs
         breadcrumbs={[
-          { label: 'Orders', href: '/dashboard/Orders' },
+          { label: 'Orders', href: '/dashboard/orders' },
           {
             label: 'Edit Order',
-            href: `/dashboard/Orders/${id}/edit`,
+            href: `/dashboard/orders/${id}/edit`,
             active: true,
           },
         ]}

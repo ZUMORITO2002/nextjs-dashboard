@@ -3,7 +3,7 @@ import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
 import { fetchMaterials } from '@/app/lib/data';
  
 export default async function Page() {
-  const materials = await fetchMaterials();
+  // const materials = await fetchMaterials();
  
   return (
     <main>
@@ -17,7 +17,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form materials={materials} />
+      <Form />
     </main>
   );
 }

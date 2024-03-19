@@ -174,7 +174,6 @@ export type Orders = {
 };
 
 export type MaterialsField = {
-  id: string;
   material_id: string;
   material_name: string;
   material_amt: number;

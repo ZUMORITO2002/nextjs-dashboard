@@ -27,9 +27,20 @@ export function UpdateInvoice({ id }: { id: string }) {
 
 
 export function DeleteInvoice({ id }: { id: string }) {
-  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  const deleteInvoiceWithId = async () =>{
+    
+    const response = await fetch(`http://localhost:8000/delete_invoice/${id}/`,{
+      method: 'DELETE',
+      // headers: { 'Content-Type': 'application/json' },
+      // body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete invoice');
+    }
+  }
   return (
-    <form action={deleteInvoiceWithId}>
+    <form onSubmit={deleteInvoiceWithId}>
     <>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>

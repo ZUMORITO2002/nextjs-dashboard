@@ -164,27 +164,55 @@ export async function fetchInvoicesPages(query: string) {
 export async function fetchInvoiceById(id: string) {
   noStore();
   try {
-    const data = await sql<InvoiceForm>`
-      SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
-    `;
+    const response = await fetch(`http://127.0.0.1:8000/get_invoice/${id}/`);
+    const responseData = await response.json();
+    const invoice: InvoiceForm[] = responseData.map((item: any) => ({
+      order_id: item.order_id,
+      order_name : item.order_name,
+      invoice_amount: item.id,
+      address: item.address,
+      invoice_status: item.invoice_status
+  }));
 
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      amount: invoice.amount,
-    }));
-    console.log(invoice);
-    return invoice[0];
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
+    return invoice;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all invoices.');
   }
 }
+
+
+export async function getInvoicebyid(orderId : string){
+  console.log('I was triggered')
+  try {
+    const response = await fetch(`http://localhost:8000/get_invoice/${orderId}/`);
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch customer data");
+    }
+
+    const invoiceData = await response.json();
+    // return {
+    //   order_id: invoiceData.order_id, // Ensure ID is included in the returned object
+    //   order_name: invoiceData.order_name,
+    //   invoice_amount: invoiceData.invoice_amount,
+    //   address: invoiceData.address,
+    //   invoice_status: invoiceData.invoice_status
+    // };
+    return invoiceData; // Return the fetched customer data
+  } catch (error) {
+    console.error("Error fetching customer data:", error);
+    // Handle errors (e.g., show error message)
+    return {
+      order_id:"",
+      order_name: "",
+      invoice_amount: "",
+      address: "",
+      invoice_status: "" // Set defaults if fetching fails
+    };
+  }
+}
+
 
 export async function fetchCustomers() {
   noStore();
@@ -194,11 +222,30 @@ export async function fetchCustomers() {
     const customers: CustomerField[] = responseData.map((item: any) => ({
       id: item.id,
       name: item.name,
-      age: item.age,
+      phone_number: item.phone_number
       // Map other properties as needed
   }));
 
     return customers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all customers.');
+  }
+}
+
+export async function fetchOrders() {
+  noStore();
+  try {
+    const response = await fetch('http://127.0.0.1:8000/list_orders');
+    const responseData = await response.json();
+    const orders: Orders[] = responseData.map((item: any) => ({
+      id: item.id,
+      order_name: item.order_name,
+      customer: item.customer,
+      // Map other properties as needed
+  }));
+
+    return orders;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all customers.');
@@ -352,28 +399,7 @@ export async function fetchFilteredOrders(query: string, currentPage: number) {
 
 
 
-export async function fetchOrders() {
-  noStore();
-  try {
-    const data = await sql<Orders>`
-      SELECT
-        id,
-        order_id,
-        order_name,
-        customer_name,
-        date,
-        order_status
-      FROM orders
-      ORDER BY order_name ASC
-    `;
 
-    const orders = data.rows;
-    return orders;
-  } catch (err) {
-    console.error('Database Error:', err);
-    throw new Error('Failed to fetch all orders.');
-  }
-}
 
 export async function fetchNewOrders() {
   noStore();

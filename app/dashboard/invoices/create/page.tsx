@@ -1,9 +1,10 @@
 import Form from '@/app/ui/invoices/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchCustomers } from '@/app/lib/data';
+import { fetchOrders } from '@/app/lib/data';
  
 export default async function Page() {
-  const customers = await fetchCustomers();
+  const orders = await fetchOrders();
+  console.log("This is the orders", orders)
  
   return (
     <main>
@@ -17,7 +18,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form customers={customers} />
+      <Form orders={orders} />
     </main>
   );
 }

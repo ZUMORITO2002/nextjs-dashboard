@@ -58,17 +58,17 @@ export default function OrderForm({ customers }: { customers: CustomerField[] })
     setSelectedCustomer(selectedCustomer);
 
     // Update the form state with the selected customer's details
-    form.setValue('customer_name', selectedCustomer?.name || '');
+    // form.setValue('customer_name', selectedCustomer?.name || '');
     // Optionally, update the status field based on the customer's selection
     // form.setValue('status', 'pending'); // Example: Set status to 'pending'
   };
 
-  const [selectedStatus, setSelectedStatus] = useState<{ value: string; id: string }>({ value: '', id: '' });
+  // const [selectedStatus, setSelectedStatus] = useState<{ value: string; id: string }>({ value: '', id: '' });
 
   // Function to handle status selection
-  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedStatus({ value: event.target.value, id: event.target.id });
-  };
+  // const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSelectedStatus({ value: event.target.value, id: event.target.id });
+  // };
 
 
 

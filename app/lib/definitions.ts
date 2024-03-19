@@ -26,13 +26,13 @@ export type Employee = {
 };
 
 export type Invoice = {
-  id: string;
   order_id: string;
+  order_name: string;
   invoice_amount: number;
   address: string;
   date: string;
   customer_name: string;
-  order_status: 'unpaid' | 'paid';
+  invoice_status: 'unpaid' | 'paid';
 };
 
 export type Revenue = {
@@ -91,10 +91,11 @@ export type CustomerField = {
 };
 
 export type InvoiceForm = {
-  id: string;
-  customer_id: string;
-  amount: number;
-  status: 'pending' | 'paid';
+  order_id: string;
+  order_name: string;
+  invoice_amount: string;
+  address: string;
+  invoice_status: string;
 };
 
 export type Suppliers = {

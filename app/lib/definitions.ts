@@ -133,6 +133,10 @@ export type FormattedSuppliersTable = {
 export type SuppliersField = {
   id: string;
   name: string;
+  phone: string;
+  email: string;
+  rating: string;
+
 };
 
 export type SuppliersTableType = {

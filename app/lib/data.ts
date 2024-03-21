@@ -319,12 +319,24 @@ export async function getUser(email: string) {
 export async function fetchSuppliers() {
   noStore();
   try {
-    const data = await sql<SuppliersField>`
-    SELECT id,Name,Rating FROM suppliers ORDER BY id ASC
-    `;
+    const response = await fetch('http://127.0.0.1:8000/list_suppliers');
+    const responseData = await response.json();
+    const suppliers: SuppliersField[] = responseData.map((item: any) => ({
+      // "supplier_id": 10,
+      // "supplier_name": "Donkothhhhh",
+      // "email": "rooseweltt47@gmail.com",
+      // "phone": "8562314894",
+      // "rating": "3"
+      id: item.supplier_id,
+      name: item.supplier_name,
+      phone: item.phone,
+      email:item.email,
+      rating:item.rating
+  }))
 
-    const Suppliers = data.rows;
-    return Suppliers;
+
+
+    return suppliers;
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch all suppliers.');

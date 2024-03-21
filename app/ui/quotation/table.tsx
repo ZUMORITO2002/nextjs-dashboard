@@ -63,8 +63,8 @@ export default function Quotation({
                 <QuotationStatus status={quotations.quotation_status} />
                 <div className="flex w-full items-center justify-between pt-4">
                   <div className="flex justify-end gap-2">
-                    <UpdateQuotation id={quotations.id} />
-                    <RemoveQuotation id={quotations.id} />
+                    <UpdateQuotation id={quotations.qoutation_id} />
+                    <RemoveQuotation id={quotations.qoutation_id} />
                   </div>
                 </div>
               </div>
@@ -119,8 +119,8 @@ export default function Quotation({
 
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <UpdateQuotation id={quotations.id} />
-                      <RemoveQuotation id={quotations.id} />
+                      <UpdateQuotation id={quotations.qoutation_id} />
+                      <RemoveQuotation id={quotations.qoutation_id} />
                     </div>
                   </td>
                 </tr>

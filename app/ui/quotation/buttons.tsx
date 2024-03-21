@@ -28,15 +28,24 @@ export function UpdateQuotation({ id }: { id: string }) {
 }
 
 export function RemoveQuotation({ id }: { id: string }) {
-  const removeQuotationrWithId = removeQuotation.bind(null, id);
+  const deleteQuotationWithId = async () =>{
+    const response = await fetch(`http://localhost:8000/delete_quotation/${id}/`,{
+      method: 'DELETE',
+      // headers: { 'Content-Type': 'application/json' },
+      // body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete order');
+    }
+  } 
   return (
-    <form action={removeQuotationrWithId}>
-    <>
-      <button className="rounded-md border p-2 hover:bg-blue-600">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </>
+    <form onSubmit={deleteQuotationWithId}> 
+      <>
+        <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+          <span className="sr-only">Delete</span>
+          <TrashIcon className="w-5" />
+        </button>
+      </>
     </form>
   );
 }

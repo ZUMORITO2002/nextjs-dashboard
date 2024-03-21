@@ -1,6 +1,6 @@
 import Form from '@/app/ui/quotation/create-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
-import { fetchQuotation } from '@/app/lib/data';
+import { fetchSuppliers } from '@/app/lib/data';
 import ImageUpload from "@/app/ui/quotation/image-upload";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 export default async function Page() {
-  const customers = await fetchQuotation();
+  const suppliers = await fetchSuppliers();
  
   return (
     <main>
@@ -26,7 +26,7 @@ export default async function Page() {
           },
         ]}
       />
-      <Form quotation={customers} />
+      <Form suppliers={suppliers} />
       <h1 className="text-5xl font-semibold justify-center al">OR</h1>
       <p className="text-muted-foreground">File upload component for React</p>
       <div className="flex gap-4">

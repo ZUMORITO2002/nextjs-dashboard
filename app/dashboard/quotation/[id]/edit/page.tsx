@@ -6,14 +6,14 @@ import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    const [quotation,quotations] = await Promise.all([
-        fetchQuotationsById(id),
-        fetchQuotation(),
-      ]);
+    // const [quotation,quotations] = await Promise.all([
+    //     fetchQuotationsById(id),
+    //     fetchQuotation(),
+    //   ]);
 
-      if (!quotation) {
-        notFound();
-      }
+    //   if (!quotation) {
+    //     notFound();
+    //   }
   return (
     <main>
       <Breadcrumbs
@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form quotation={quotation} quotations={quotations} />
+      <Form quotationId={id}/>
     </main>
   );
 }

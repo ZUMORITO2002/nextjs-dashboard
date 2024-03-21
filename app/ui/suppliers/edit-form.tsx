@@ -32,12 +32,12 @@ let global_supplier_id = "";
 
 
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+type SupplierFormValues = z.infer<typeof profileFormSchema>
 
 
 export default function EditSupplierForm({ supplierId }: { supplierId: string }) {
   
-  const form = useForm<ProfileFormValues>({
+  const form = useForm<SupplierFormValues>({
     resolver: zodResolver(profileFormSchema),
     mode: "onChange",
     defaultValues: async () => {
@@ -74,7 +74,7 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
     },
   });
 
-  async function onSubmit(data: supplierFormValues) {
+  async function onSubmit(data:SupplierFormValues) {
     console.log("Button Was Clicked")
     let new_data ={
       supplier_id: global_supplier_id,

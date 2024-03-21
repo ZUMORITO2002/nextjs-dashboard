@@ -19,6 +19,7 @@ export function UpdateMaterials({ id }: { id: string }) {
   return (
     <Link
     href={`/dashboard/Materials/${id}/edit`}
+    
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
@@ -28,18 +29,25 @@ export function UpdateMaterials({ id }: { id: string }) {
 
 
 export function RemoveMaterial({ id }: { id: string }) {
-  const removeMaterialWithId = removeMaterial.bind(null, id);
+  // const removeMaterialWithId = removeMaterial.bind(null, id);
+  const deletematerialWithId = async () =>{
+    const response = await fetch(`http://localhost:8000/delete_material/${id}/`,{
+      method: 'DELETE',
+      // headers: { 'Content-Type': 'application/json' },
+      // body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete order');
+    }
+  } 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      removeMaterialWithId(); 
-    }}>
+    <form onSubmit={deletematerialWithId}> 
     <>
       <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
       </button>
     </>
-    </form>
+  </form>
   );
 }

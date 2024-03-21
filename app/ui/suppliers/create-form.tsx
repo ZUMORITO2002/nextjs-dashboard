@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { addCustomer } from "@/app/lib/actions"
 
-const profileFormSchema = z.object({
+const SupplierFormSchema = z.object({
   supplier_name: z
     .string(),
 
@@ -30,34 +30,26 @@ const profileFormSchema = z.object({
     .string(),
 
   rating: z.string(),
-  organization: z.string(),
-  location: z.string(),
-  year: z.string(),
-  purchase: z.string(),
 })
 
- type ProfileFormValues = z.infer<typeof profileFormSchema>
+ type SupplierFormValues = z.infer<typeof SupplierFormSchema>
 
 
-export function ProfileForm() {
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+export function SupplierForm() {
+  const form = useForm<SupplierFormValues>({
+    resolver: zodResolver(SupplierFormSchema),
     mode: "onChange",
     defaultValues: {
       supplier_name: "",
       email: "",
       phone: "",
       rating: "",
-      organization: "",
-      location: "",
-      year: "",
-      purchase: "",
     },
   })
   
 
 
-  function onSubmit(data: ProfileFormValues) {
+  function onSubmit(data: SupplierFormValues) {
     const submitForm = async () => {
       try {
         // Replace with your actual API call logic
@@ -145,59 +137,6 @@ export function ProfileForm() {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="organization"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-          <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-
-          <FormField
-          control={form.control}
-          name="year"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Year</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-
-
-          <FormField
-          control={form.control}
-          name="purchase"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Purchase</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
         <Button type="submit">Add Supplier</Button>
       </form>
     </Form>

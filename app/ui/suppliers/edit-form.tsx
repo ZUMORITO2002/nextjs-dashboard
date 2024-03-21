@@ -21,63 +21,54 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { addCustomer } from "@/app/lib/actions"
 
-let global_supplier_id = "";
-
-const supplierFormSchema = z.object({
+const profileFormSchema = z.object({
   supplier_name: z.string(),
-  email: z.string(),
   phone: z.string(),
+  email: z.string(),
   rating: z.string(),
-  organization: z.string(),
-  location: z.string(),
-  year: z.string(),
-  purchase: z.string(),
 });
 
-type supplierFormValues = z.infer<typeof supplierFormSchema>
+let global_supplier_id = "";
+
+
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>
+
 
 export default function EditSupplierForm({ supplierId }: { supplierId: string }) {
-  const form = useForm<supplierFormValues>({
-    resolver: zodResolver(supplierFormSchema),
+  
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
     mode: "onChange",
     defaultValues: async () => {
       try {
         console.log(supplierId)
         const response = await fetch(`http://localhost:8000/get_suppliers/${supplierId}`);
-  
+
         if (!response.ok) {
           throw new Error("Failed to fetch supplier data");
         }
-  
+        
         const supplierData = await response.json();
-        console.log("this is id ",supplierData.supplier_id)
+        console.log("this is id ", supplierData.supplier_id)
         global_supplier_id = supplierData.supplier_id;
-        console.log("first golbal supplier id is ", global_supplier_id)
         return {
           supplier_id: supplierData.supplier_id, // Ensure ID is included in the returned object
           supplier_name: supplierData.supplier_name,
-          email: supplierData.email,
           phone: supplierData.phone,
-          rating: supplierData.rating,
-          organization: supplierData.organization,
-          location: supplierData.location,
-          year: supplierData.year,
-          purchase: supplierData.purchase
+          email: supplierData.email,
+          rating: supplierData.rating
         };
         return supplierData; // Return the fetched customer data
       } catch (error) {
         console.error("Error fetching customer data:", error);
         // Handle errors (e.g., show error message)
         return {
-          supplier_id:"",
+          supplier_id: "",
           supplier_name: "",
-          email: "",
           phone: "",
-          rating: "", 
-          organization: "", 
-          location: "", 
-          year: "", 
-          purchase: "",  
+          email: "",
+          rating: "",
         };
       }
     },
@@ -85,21 +76,13 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
 
   async function onSubmit(data: supplierFormValues) {
     console.log("Button Was Clicked")
-    console.log("This is data variable", data)
-    // data.id = global_id
-    console.log("This is global" + global_supplier_id)
     let new_data ={
-        id : global_supplier_id,
-        supplier_name : data.supplier_name,
-        email : data.email,
-        phone: data.phone,
-        rating: data.rating,
-        organiztion: data.organization,
-        location: data.location,
-        year: data.year,
-        purchase: data.purchase
+      supplier_id: global_supplier_id,
+      supplier_name: data.supplier_name,
+      phone: data.phone,
+      email: data.email,
+      rating: data.rating
     }
-    console.log("This is new data" + new_data)
     try {
       const response = await fetch(`http://localhost:8000/update_suppliers`, {
         method: "POST",
@@ -142,18 +125,6 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}
@@ -167,6 +138,19 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
               {/* {form.formState.errors.phone && (
                 <FormMessage>{form.formState.errors.phone.message}</FormMessage>
               )} */}
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
             </FormItem>
           )}
         />
@@ -185,73 +169,7 @@ export default function EditSupplierForm({ supplierId }: { supplierId: string })
           )}
         />
 
-
-
-        <FormField
-          control={form.control}
-          name="organization"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              {/* {form.formState.errors.phone && (
-                <FormMessage>{form.formState.errors.phone.message}</FormMessage>
-              )} */}
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              {/* {form.formState.errors.phone && (
-                <FormMessage>{form.formState.errors.phone.message}</FormMessage>
-              )} */}
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="year"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Year</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              {/* {form.formState.errors.phone && (
-                <FormMessage>{form.formState.errors.phone.message}</FormMessage>
-              )} */}
-            </FormItem>
-          )}
-        />
-
-         <FormField
-          control={form.control}
-          name="purchase"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Purchase</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              {/* {form.formState.errors.phone && (
-                <FormMessage>{form.formState.errors.phone.message}</FormMessage>
-              )} */}
-            </FormItem>
-          )}
-        />
-
-      <Button type="submit">Update Customer</Button>
+        <Button type="submit">Update Supplier</Button>
       </form>
     </Form>
   );

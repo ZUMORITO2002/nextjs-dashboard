@@ -6,14 +6,14 @@ import { notFound } from 'next/navigation';
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = params.id;
-    const [materials] = await Promise.all([
-        fetchMaterialsById(id),
-        fetchMaterials(),
-      ]);
+    // const [materials] = await Promise.all([
+    //     fetchMaterialsById(id),
+    //     fetchMaterials(),
+    //   ]);
 
-      if (!materials) {
-        notFound();
-      }
+    //   if (!materials) {
+    //     notFound();
+    //   }
   return (
     <main>
       <Breadcrumbs
@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           },
         ]}
       />
-      <Form material={materials} materials={[]}  />
+      <Form materialId={id}  />
     </main>
   );
 }

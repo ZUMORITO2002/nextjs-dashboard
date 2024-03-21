@@ -1,5 +1,8 @@
 'use client';
 
+import {z} from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {  useForm } from "react-hook-form";
 import { updateMaterial } from '@/app/lib/actions';
 import { MaterialsField, MaterialsForm } from '@/app/lib/definitions';
 import {
@@ -9,85 +12,139 @@ import {
   UserCircleIcon,
   WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { useFormState } from 'react-dom';
+import { toast } from "@/components/ui/use-toast";
 
-  export default function EditMaterialForm({ materials,material }: { materials: MaterialsField[] ;material: MaterialsForm;}) {
-  const initialState = { message: null, errors: {} };
-  const updateMaterialWithId = updateMaterial.bind(null, material.materials_id);
-  const [state, dispatch] = useFormState(updateMaterialWithId, initialState);
+
+const materialFormSchema = z.object({
+  material_name: z
+    .string(),
+
+  material_amount: z
+    .string(),
+})
+
+type MaterialFormValues = z.infer<typeof materialFormSchema>
+
+  export default function EditMaterialForm({ materialId }: { materialId: string;}) {
+  // const initialState = { message: null, errors: {} };
+  // const updateMaterialWithId = updateMaterial.bind(null, material.materials_id);
+  // const [state, dispatch] = useFormState(updateMaterialWithId, initialState);
+  const form = useForm<MaterialFormValues>({
+    resolver: zodResolver(materialFormSchema),
+    mode: "onChange",
+    defaultValues: async () => {
+      try {
+        console.log(materialId)
+        const response = await fetch(`http://localhost:8000/get_material/${materialId}`);
+  
+        if (!response.ok) {
+          throw new Error("Failed to fetch customer data");
+        }
+  
+        const materialData = await response.json();
+        return {
+          material_id: materialData.material_id,
+          material_name: materialData.material_name,
+          material_amount: materialData.material_amount,
+        };
+        return materialData; // Return the fetched customer data
+      } catch (error) {
+        console.error("Error fetching customer data:", error);
+        // Handle errors (e.g., show error message)
+        return {
+          material_id:"",
+          material_name: "",
+          material_amount: "", // Set defaults if fetching fails
+        };
+      }
+    },
+  });
+
+  async function onSubmit(data: MaterialFormValues) {
+    console.log("Button Was Clicked")
+    console.log("This is data variable", data)
+    // data.id = global_i
+    let new_data ={
+      material_id : materialId,
+      material_name : data.material_name,
+      material_amount: data.material_amount
+
+    }
+    console.log("This is new data" + new_data)
+    try {
+      const response = await fetch(`http://localhost:8000/update_material`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(new_data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update customer");
+      }
+
+      // Handle successful response (e.g., show success toast)
+      toast({
+        title: "Customer updated successfully!",
+        description: "Customer information has been updated.",
+      });
+      // Navigate back or handle success as needed
+    } catch (error) {
+      // Handle errors (e.g., show error toast)
+      toast({
+        title: "Failed to update customer.",
+        description: "Please try again or contact support.",
+      });
+    }
+  }
  
   return (
-    <form action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
-        {/* Materials Name */}
-        <div className="mb-4">
-          <label htmlFor="Material" className="mb-2 block text-sm font-medium">
-            Choose Materials
-          </label>
-          <div className="relative">
-            <select
-              id="material"
-              name="material_id"
-              className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              defaultValue={material.materials_id}
-              aria-describedby="customer-error"
-            >
-              <option value="" disabled>
-                Select a Material
-              </option>
-              {materials.map((name) => (
-                <option key={name.id} value={name.id}>
-                  {name.name}
-                </option>
-              ))}
-            </select>
-            <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500" />
-          </div>
-          <div id="customer-error" aria-live="polite" aria-atomic="true">
-            {state.errors?.materialsId &&
-              state.errors.materialsId.map((error: string) => (
-                <p className="mt-2 text-sm text-red-500" key={error}>
-                  {error}
-                </p>
-              ))}
-          </div>
-        </div>
+    <Form {...form}>
+      {/* Form fields for name, email, phone_number (same as create-customer) */}
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="material_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Material name</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+            </FormItem>
+          )}
+        />
 
-        
-        {/* Materials Amount */}
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Choose an amount
-          </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="amount"
-                name="amount"
-                type="number"
-                step="0.01"
-                defaultValue={material.stock}
-                placeholder="Enter  amount"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-              />
-              <WrenchScrewdriverIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <div className="mt-6 flex justify-end gap-4">
-        <Link
-          href="/dashboard/Materials"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
-        >
-          Cancel
-        </Link>
-        <Button type="submit">Edit Materials</Button>
-      </div>
-    </form>
+        <FormField
+          control={form.control}
+          name="material_amount"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Material amount</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              {/* {form.formState.errors.phone && (
+                <FormMessage>{form.formState.errors.phone.message}</FormMessage>
+              )} */}
+            </FormItem>
+          )}
+        />
+      
+      <Button type="submit">Update Material</Button>
+      </form>
+    </Form>
   );
 
 }

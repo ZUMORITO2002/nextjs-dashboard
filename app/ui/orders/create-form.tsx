@@ -58,17 +58,17 @@ export default function OrderForm({ customers }: { customers: CustomerField[] })
     setSelectedCustomer(selectedCustomer);
 
     // Update the form state with the selected customer's details
-    form.setValue('customer_name', selectedCustomer?.name || '');
+    // form.setValue('customer_name', selectedCustomer?.name || '');
     // Optionally, update the status field based on the customer's selection
     // form.setValue('status', 'pending'); // Example: Set status to 'pending'
   };
 
-  const [selectedStatus, setSelectedStatus] = useState<{ value: string; id: string }>({ value: '', id: '' });
+  // const [selectedStatus, setSelectedStatus] = useState<{ value: string; id: string }>({ value: '', id: '' });
 
   // Function to handle status selection
-  const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedStatus({ value: event.target.value, id: event.target.id });
-  };
+  // const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSelectedStatus({ value: event.target.value, id: event.target.id });
+  // };
 
 
 
@@ -203,7 +203,7 @@ export default function OrderForm({ customers }: { customers: CustomerField[] })
                 <input
                   id="delivered"
                   type="radio"
-                  value="Delivered"
+                  value="Finished"
                   {...form.register('status')} // Register the radio button with React Hook Form
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
@@ -211,7 +211,7 @@ export default function OrderForm({ customers }: { customers: CustomerField[] })
                   htmlFor="delivered"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Delivered<CheckIcon className="h-4 w-4" />
+                  Finished <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>
@@ -221,7 +221,7 @@ export default function OrderForm({ customers }: { customers: CustomerField[] })
 
       <div className="mt-6 flex justify-end gap-4">
         <Link
-          href="/dashboard/orders"
+          href="/dashboard/Orders"
           className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel

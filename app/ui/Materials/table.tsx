@@ -42,7 +42,7 @@ export default function Materials({
           <div className="md:hidden">
             {material.map((material) => (
               <div
-                key={material.id}
+                key={material.material_id}
                 className="mb-2 w-full rounded-md bg-white p-4"
               >
                 <div className="flex items-center justify-between border-b pb-4">
@@ -58,8 +58,8 @@ export default function Materials({
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
-                    <UpdateMaterials id={material.id} />
-                    <RemoveMaterial id={material.id} />
+                    <UpdateMaterials id={material.material_id} />
+                    <RemoveMaterial id={material.material_id} />
                  </div>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default function Materials({
             <tbody className="bg-white">
               {material.map((material) => (
                 <tr
-                 key={material.id}
+                 key={material.material_id}
                  className="w-full border-b py-3 text-sm last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg"
                 >
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
@@ -101,8 +101,8 @@ export default function Materials({
                  </td>
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                    <UpdateMaterials id={material.id} />
-                    <RemoveMaterial id={material.id} />
+                    <UpdateMaterials id={material.material_id} />
+                    <RemoveMaterial id={material.material_id} />
                     </div>
                  </td>
                 </tr>

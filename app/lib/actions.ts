@@ -174,40 +174,35 @@ export async function createInvoice(prevState: State, formData: FormData) {
 const UpdateInvoice = FormSchema.omit({ id: true, date: true });
 
 export async function updateInvoice(
-  id: string,
-  prevState: State,
-  formData: FormData,
-) {
-  const validatedFields = UpdateInvoice.safeParse({
-    customerId: formData.get('customerId'),
-    amount: formData.get('amount'),
-    status: formData.get('status'),
-  });
- 
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Missing Fields. Failed to Update Invoice.',
-    };
-  }
- 
-  const { customerId, amount, status } = validatedFields.data;
-  const amountInCents = amount * 100;
- 
-  try {
-    await sql`
-      UPDATE invoices
-      SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-      WHERE id = ${id}
-    `;
-  } catch (error) {
-    return { message: 'Database Error: Failed to Update Invoice.' };
-  }
- 
-  revalidatePath('/dashboard/invoices');
-  redirect('/dashboard/invoices');
-}
+  order_id: string,
+  invoice_amount: string,
+  address : string,
+  invoice_status: string
 
+) {
+  const new_data ={
+    order_id:order_id,
+    invoice_amount : invoice_amount,
+    address : address,
+    invoice_status : invoice_status
+  }
+  try {
+    const response = await fetch(`http://localhost:8000/update_invoice`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(new_data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to update customer");
+    }
+}
+catch (error) {
+  // Handle errors (e.g., show error toast)
+  console.log("Failed to update customer.Please try again or contact support.",
+  );
+}
+}
 export async function deleteInvoice(id: string) {
 
     try {

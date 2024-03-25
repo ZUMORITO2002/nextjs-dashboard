@@ -26,23 +26,70 @@ import {
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+import RevenueChart from '../ui/dashboard/revenue-chart';
 
 export async function fetchRevenue() {
   noStore();
+  // try {
+  //   console.log('Fetching revenue data...');
+  //   await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  //   const data = await sql<Revenue>`SELECT * FROM revenue`;
+
+  //   console.log('Data fetch completed after 0.3 seconds.');
+  //   console.log('These are revenue data', data.rows)
+  //   return data.rows;
+  // } catch (error) {
+  //   console.error('Database Error:', error);
+  //   throw new Error('Failed to fetch revenue data.');
+  // }
   try {
-    console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
+    const response = await fetch('http://127.0.0.1:8000/list_revenue');
+    const responseData = await response.json();
+    const revenue: Revenue[] = responseData.map((item: any) => ({
+      month: item.month,
+      revenue: item.SVM_Prediction
+      // Map other properties as needed
+  }));
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
-
-    console.log('Data fetch completed after 3 seconds.');
-
-    return data.rows;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    return revenue;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch revenue.');
   }
 }
+
+export async function fetchDemand() {
+  noStore();
+  // try {
+  //   console.log('Fetching revenue data...');
+  //   await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  //   const data = await sql<Revenue>`SELECT * FROM revenue`;
+
+  //   console.log('Data fetch completed after 0.3 seconds.');
+  //   console.log('These are revenue data', data.rows)
+  //   return data.rows;
+  // } catch (error) {
+  //   console.error('Database Error:', error);
+  //   throw new Error('Failed to fetch revenue data.');
+  // }
+  try {
+    const response = await fetch('http://127.0.0.1:8000/list_demand');
+    const responseData = await response.json();
+    const revenue: Revenue[] = responseData.map((item: any) => ({
+      month: item.month,
+      revenue: item.SVM_Prediction
+      // Map other properties as needed
+  }));
+
+    return revenue;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch revenue.');
+  }
+}
+
 
 export async function fetchLatestInvoices() {
   noStore();

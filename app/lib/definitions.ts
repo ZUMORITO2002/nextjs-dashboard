@@ -246,6 +246,14 @@ export type Quotation= {
 
 };
 
+export type Salary= {
+  id:string;
+  employee: string;
+  date:string;
+  amount:string;
+
+};
+
 
 
 

@@ -1,4 +1,4 @@
-import { PlusIcon, TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, TrashIcon, PencilIcon , BanknotesIcon} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { removeEmployee } from '@/app/lib/actions';
 
@@ -21,6 +21,18 @@ export function EditEmployee ({ id }: { id: string }) {
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       <PencilIcon className="w-5" />
+    </Link>
+  );
+}
+
+
+export function SalaryEmployee ({ id }: { id: string }) {
+  return (
+    <Link
+    href={`/dashboard/employees/${id}/salary`}
+      className="rounded-md border p-2 hover:bg-gray-100"
+    >
+      < BanknotesIcon className="w-5" />
     </Link>
   );
 }

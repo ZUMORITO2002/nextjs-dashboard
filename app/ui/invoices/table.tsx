@@ -63,7 +63,7 @@ export default function Invoices({
                     <p>{invoice.customer_name}</p>
                  </div>
                 </div>
-                  <InvoiceStatus status={invoice.order_status} />
+                  <InvoiceStatus status={invoice.invoice_status} />
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
                     <UpdateInvoice id={invoice.order_id} />
@@ -123,7 +123,7 @@ export default function Invoices({
                     {formatCurrency(invoice.invoice_amount)}
                  </td>
                  <td className="whitespace-nowrap px-3 py-3">
-                    <InvoiceStatus status={invoice.order_status} />
+                    <InvoiceStatus status={invoice.invoice_status} />
                  </td>
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

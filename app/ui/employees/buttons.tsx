@@ -26,10 +26,10 @@ export function EditEmployee ({ id }: { id: string }) {
 }
 
 
-export function SalaryEmployee ({ id }: { id: string }) {
+export function SalaryEmployee ({ id, name }: { id: string , name : string}) {
   return (
     <Link
-    href={`/dashboard/employees/${id}/salary`}
+    href={`/dashboard/employees/${id}/${name}/salary`}
       className="rounded-md border p-2 hover:bg-gray-100"
     >
       < BanknotesIcon className="w-5" />

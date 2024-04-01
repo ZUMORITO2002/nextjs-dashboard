@@ -5,17 +5,18 @@ import { updateCustomer } from '@/app/lib/actions';
 import { notFound } from 'next/navigation';
 import EditCustomerForm from '@/app/ui/customers/edit-form'
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({ params }: { params: { id: string , name:string} }) {
     const id = params.id;
-    console.log("thi is good id",id)
+    const name = params.name;
+    console.log("thi is good id",name, id)
   return (
     <main>
       <Breadcrumbs
         breadcrumbs={[
           { label: 'Salary', href: '/dashboard/employees' },
           {
-            label: 'Employee Salary',
-            href: `/dashboard/employees/${id}/salary`,
+            label: `${name}`,
+            href: `/dashboard/employees/${id}/${name}/salary`,
             active: true,
           },
         ]}

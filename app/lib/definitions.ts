@@ -22,7 +22,7 @@ export type Employee = {
   name: string;
   address: string;
   phone_number: string;
-  date: string;
+  date_of_joining: string;
 };
 
 export type Invoice = {

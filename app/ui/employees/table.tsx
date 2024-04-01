@@ -60,7 +60,7 @@ export default async function EmployeeTable({
                       <p>{employees.phone_number}</p>
                     </div>
                   <div className="mb-2 flex items-center">
-                    <p>{employees.date}</p>
+                    <p>{employees.date_of_joining}</p>
                  </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -117,7 +117,7 @@ export default async function EmployeeTable({
                     {employees.phone_number}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {formatDateToLocal(employees.date)}
+                    {formatDateToLocal(employees.date_of_joining)}
                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">

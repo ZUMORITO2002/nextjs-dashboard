@@ -9,7 +9,7 @@ import { Metadata } from 'next';
 import Table from '@/app/ui/attendance/table';
 import { string } from 'zod';
 import { CustomerField, CustomersTableType, FormattedCustomersTable } from '@/app/lib/definitions';
-import { AddEmployee } from '@/app/ui/employees/buttons';
+import { AddAttendance} from '@/app/ui/attendance/buttons';
  
 export const metadata: Metadata = {
   title: 'Customers ',
@@ -34,7 +34,7 @@ export default async function Page({
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search employee..." />
-        <AddEmployee />
+        {/* <AddAttendance /> */}
       </div>
        <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

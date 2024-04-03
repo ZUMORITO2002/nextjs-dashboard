@@ -26,6 +26,9 @@ const profileFormSchema = z.object({
   email: z
     .string(),
 
+  address: z
+    .string(),
+
   phone_number: z
     .string(),
 })
@@ -95,7 +98,7 @@ export function ProfileForm() {
         />
         <FormField
           control={form.control}
-          name="email"
+          name="address"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Address</FormLabel>

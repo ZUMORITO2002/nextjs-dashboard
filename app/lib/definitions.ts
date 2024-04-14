@@ -183,7 +183,7 @@ export type MaterialsField = {
   material_amt: number;
 };
 
-export type Materials = {
+export type Material = {
   id: string;
   material_id: string;
   material_name: string;
@@ -207,6 +207,11 @@ export type MaterialsTable = {
   stock: number;
 };
 
+export type EstimatedMaterial ={
+  mat_id : string;
+  mat_name: string;
+  units: string;
+}
 
 export type QuotationField = {
   id: string;

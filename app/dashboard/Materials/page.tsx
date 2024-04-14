@@ -6,6 +6,7 @@ import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
 import { Metadata } from 'next';
 import Table from '@/app/ui/Materials/table';
+import Table1 from '@/app/ui/Materials/estimatedtable';
 
 
  
@@ -36,6 +37,9 @@ export default async function Page({
       </div>
       <Suspense key={query} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={0} />
+      </Suspense>
+      <Suspense key={query} fallback={<CustomersTableSkeleton />}>
+        <Table1 query={query} currentPage={0} />
       </Suspense>
        {/* <Suspense key={query + currentPage} fallback={<CustomersTableSkeleton />}>
         <Table query={query} currentPage={currentPage} />

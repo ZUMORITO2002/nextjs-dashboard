@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Employee } from '@/app/lib/definitions';
-const EmployeeTable = () => {
+const AttendanceTable = () => {
   // const [employees, setEmployees] = useState([]);
   const [employees, setEmployees] = useState<Employee[]>([]);
   // const [selectedEmployees, setSelectedEmployees] = useState([]);
@@ -46,7 +46,7 @@ const EmployeeTable = () => {
         body: JSON.stringify({
           employee_ids: selectedEmployees,
           action: 'check_in'
-          
+
         })
       });
       // Handle response as needed
@@ -65,7 +65,7 @@ const EmployeeTable = () => {
         body: JSON.stringify({
           employee_ids: selectedEmployees,
           action: 'check_out'
-          
+
         })
       });
       // Handle response as needed
@@ -75,19 +75,25 @@ const EmployeeTable = () => {
   };
 
   return (
-    <div>
-      <table>
-        <thead>
+    <div className="mt-6 flow-root">
+      <table className="hidden min-w-full text-gray-900 md:table">
+        <thead className="rounded-lg text-left text-sm font-normal">
           <tr>
-            <th>Name</th>
-            <th>Check In</th>
+            <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
+              Employees
+            </th>
+            <th scope="col" className="px-4 py-5 font-medium">
+
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white">
           {employees.map((employee: { employee_id: string; name: string }) => (
-            <tr key={employee.employee_id}>
-              <td>{employee.name}</td>
-              <td>
+            <tr key={employee.employee_id} className="w-full border-b py-3 text-sm last-of-type:border-none">
+              <td className="whitespace-nowrap px-4 py-3">
+                {employee.name}
+              </td>
+              <td className="whitespace-nowrap px-4 py-3">
                 <input
                   type="checkbox"
                   checked={selectedEmployees.includes(employee.employee_id)}
@@ -98,12 +104,19 @@ const EmployeeTable = () => {
           ))}
         </tbody>
       </table>
-      <div>
-        <button onClick={handleCheckIn}>Check In</button>
-        <button onClick={handleCheckOut}>Check Out</button>
+      <div className="flex justify-between pt-4">
+        <div>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Check In
+          </button>
+          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+            Check Out
+          </button>
+        </div>
       </div>
     </div>
+
   );
 };
 
-export default EmployeeTable;
+export default AttendanceTable;

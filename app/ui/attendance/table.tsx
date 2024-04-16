@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { Employee } from '@/app/lib/definitions';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 const AttendanceTable = () => {
   // const [employees, setEmployees] = useState([]);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
   const [employees, setEmployees] = useState<Employee[]>([]);
   // const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
@@ -49,9 +52,16 @@ const AttendanceTable = () => {
 
         })
       });
-      // Handle response as needed
+      if (response.ok) {
+        setDialogMessage('Check in successful!');
+      } else {
+        setDialogMessage('Check in failed. Please try again later.');
+      }
+
+      setDialogVisible(true);
     } catch (error) {
-      console.error('Error checking in:', error);
+      setDialogMessage('Check in failed. Please try again later.');
+      setDialogVisible(true);
     }
   };
 
@@ -68,32 +78,44 @@ const AttendanceTable = () => {
 
         })
       });
-      // Handle response as needed
+      if (response.ok) {
+        setDialogMessage('Check out successful!');
+      } else {
+        setDialogMessage('Check out failed. Please try again later.');
+      }
+
+      setDialogVisible(true);
     } catch (error) {
-      console.error('Error checking out:', error);
+      setDialogMessage('Check out failed. Please try again later.');
+      setDialogVisible(true);
     }
   };
 
   return (
     <div className="mt-6 flow-root">
-      <table className="hidden min-w-full text-gray-900 md:table">
+      <Dialog open={dialogVisible} onOpenChange={(open) => setDialogVisible(open)}>
+        <DialogContent>
+          <p>{dialogMessage}</p>
+        </DialogContent>
+      </Dialog>
+      <table className="hidden rounded-lg min-w-full text-gray-900 bg-white border-b md:table">
         <thead className="rounded-lg text-left text-sm font-normal">
           <tr>
             <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-              Employees
+              Employee
             </th>
-            <th scope="col" className="px-4 py-5 font-medium">
+            <th scope="col" className="px-3 py-5 font-medium">
 
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white">
+        <tbody className="bg-white border-b rounded-lg">
           {employees.map((employee: { employee_id: string; name: string }) => (
-            <tr key={employee.employee_id} className="w-full border-b py-3 text-sm last-of-type:border-none">
+            <tr key={employee.employee_id} className="rounded-lg w-full border-b py-3 text-sm last-of-type:border-none">
               <td className="whitespace-nowrap px-4 py-3">
                 {employee.name}
               </td>
-              <td className="whitespace-nowrap px-4 py-3">
+              <td className="whitespace-nowrap px-4 py-3 rounded-lg">
                 <input
                   type="checkbox"
                   checked={selectedEmployees.includes(employee.employee_id)}
@@ -106,10 +128,10 @@ const AttendanceTable = () => {
       </table>
       <div className="flex justify-between pt-4">
         <div>
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button onClick={handleCheckIn} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 gap-2 rounded">
             Check In
           </button>
-          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+          <button onClick={handleCheckOut} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 gap-2 rounded">
             Check Out
           </button>
         </div>

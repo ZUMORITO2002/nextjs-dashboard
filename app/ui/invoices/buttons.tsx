@@ -14,28 +14,44 @@ export function CreateInvoice() {
   );
 }
 
-export function DownloadInvoice({ id }: { id: string }) {
-  // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
-  const downloadInvoiceWithId = async () =>{
-    
-    const response = await fetch(`http://127.0.0.1:8000/download-invoice/${id}/`,{
-      method: 'GET',
-      // headers: { 'Content-Type': 'application/json' },
-      // body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to download invoice');
+export function DownloadInvoice({ id, order_name }: { id: string; order_name: string }) {
+  const downloadInvoiceWithId = async () => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/download-invoice/${id}/`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/pdf' },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to download invoice');
+      }
+
+      // Convert response to blob
+      const blob = await response.blob();
+
+      // Create a URL for the blob
+      const url = window.URL.createObjectURL(new Blob([blob]));
+
+      // Create a temporary <a> element to trigger the download
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `invoice_${order_name}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up: remove the temporary <a> element and revoke the URL
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
     }
-  }
+  };
+
   return (
-    <form onSubmit={downloadInvoiceWithId}>
-    <>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Download</span>
-        <DocumentArrowDownIcon className="w-5" />
-      </button>
-    </>
-    </form>
+    <button onClick={downloadInvoiceWithId} className="rounded-md border p-2 hover:bg-gray-100">
+      <span className="sr-only">Download</span>
+      <DocumentArrowDownIcon className="w-5" />
+    </button>
   );
 }
 

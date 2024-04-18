@@ -5,8 +5,23 @@ import { lusitana } from '@/app/ui/fonts';
 // import { fetchCardData } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton ,LatestInvoicesSkeleton,CardsSkeleton} from '@/app/ui/skeletons';
+import { CustomersTableSkeleton } from '@/app/ui/skeletons';
+import Table1 from '@/app/ui/Materials/estimatedtable';
 
-export default async function Page() {
+export default async function Page(
+  {
+    searchParams,
+  }: {
+    searchParams?: {
+      query?: string;
+      page?: string;
+    };
+  }
+) 
+  {
+    const query = searchParams?.query || '';
+    // const currentPage = Number(searchParams?.page) || 1;
+    // const totalPages = await fetchSuppliersPages(query);
   return (
     <main>
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -26,6 +41,9 @@ export default async function Page() {
       
       <Suspense fallback={<LatestInvoicesSkeleton />}>
         <LatestInvoices/>
+      </Suspense>
+      <Suspense key={query} fallback={<CustomersTableSkeleton />}>
+        <Table1 query={query} currentPage={0} />
       </Suspense>
 
       

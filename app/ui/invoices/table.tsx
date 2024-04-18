@@ -67,7 +67,7 @@ export default function Invoices({
                   <InvoiceStatus status={invoice.invoice_status} />
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
-                    <DownloadInvoice id={invoice.order_id} />
+                    <DownloadInvoice id={invoice.order_id} order_name = {invoice.order_name} />
                     <UpdateInvoice id={invoice.order_id} />
                     <DeleteInvoice id={invoice.order_id} />
                  </div>
@@ -129,7 +129,7 @@ export default function Invoices({
                  </td>
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                      <DownloadInvoice id={invoice.order_id}/>
+                      <DownloadInvoice id={invoice.order_id} order_name = {invoice.order_name}/>
                       <UpdateInvoice id={invoice.order_id} />
                       <DeleteInvoice id={invoice.order_id} />
                     </div>

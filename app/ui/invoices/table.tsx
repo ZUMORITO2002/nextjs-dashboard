@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { UpdateInvoice, DeleteInvoice } from '@/app/ui/invoices/buttons';
+import { UpdateInvoice, DeleteInvoice ,DownloadInvoice} from '@/app/ui/invoices/buttons';
 import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchInvoices } from '@/app/lib/data'; 
 import { Invoice } from '@/app/lib/definitions';
+
 
 export default function Invoices({
  query,
@@ -66,6 +67,7 @@ export default function Invoices({
                   <InvoiceStatus status={invoice.invoice_status} />
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
+                    <DownloadInvoice id={invoice.order_id} />
                     <UpdateInvoice id={invoice.order_id} />
                     <DeleteInvoice id={invoice.order_id} />
                  </div>
@@ -127,6 +129,7 @@ export default function Invoices({
                  </td>
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
+                      <DownloadInvoice id={invoice.order_id}/>
                       <UpdateInvoice id={invoice.order_id} />
                       <DeleteInvoice id={invoice.order_id} />
                     </div>

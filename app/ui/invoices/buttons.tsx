@@ -1,4 +1,4 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon, TrashIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteInvoice } from '@/app/lib/actions';
 
@@ -13,6 +13,32 @@ export function CreateInvoice() {
     </Link>
   );
 }
+
+export function DownloadInvoice({ id }: { id: string }) {
+  // const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+  const downloadInvoiceWithId = async () =>{
+    
+    const response = await fetch(`http://127.0.0.1:8000/download-invoice/${id}/`,{
+      method: 'GET',
+      // headers: { 'Content-Type': 'application/json' },
+      // body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to download invoice');
+    }
+  }
+  return (
+    <form onSubmit={downloadInvoiceWithId}>
+    <>
+      <button className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Download</span>
+        <DocumentArrowDownIcon className="w-5" />
+      </button>
+    </>
+    </form>
+  );
+}
+
 
 export function UpdateInvoice({ id }: { id: string }) {
   return (

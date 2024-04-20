@@ -4,7 +4,7 @@ import { AddCustomer} from '@/app/ui/customers/buttons';
 import { lusitana } from '@/app/ui/fonts';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { Suspense } from 'react';
-import { fetchCustomers , fetchCustomerPages } from '@/app/lib/data';
+// import { fetchCustomers , fetchCustomerPages } from '@/app/lib/data';
 import { Metadata } from 'next';
 import Table from '@/app/ui/employees/table';
 import { string } from 'zod';
@@ -25,7 +25,7 @@ export default async function Page({
   }) {
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
-    const totalPages = await fetchCustomerPages(query);
+    // const totalPages = await fetchCustomerPages(query);
 
   return (
     <div className="w-full">
@@ -40,7 +40,7 @@ export default async function Page({
         <Table query={query} currentPage={currentPage} />
       </Suspense>
       <div className="mt-5 flex w-full justify-center">
-        <Pagination totalPages={totalPages} />
+        {/* <Pagination totalPages={totalPages} /> */}
       </div>
     </div>
   );

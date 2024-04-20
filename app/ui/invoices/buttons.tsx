@@ -1,6 +1,9 @@
+
 import { PencilIcon, PlusIcon, TrashIcon, DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { deleteInvoice } from '@/app/lib/actions';
+import { useState } from 'react';
+
 
 export function CreateInvoice() {
   return (
@@ -14,46 +17,7 @@ export function CreateInvoice() {
   );
 }
 
-export function DownloadInvoice({ id, order_name }: { id: string; order_name: string }) {
-  const downloadInvoiceWithId = async () => {
-    try {
-      const response = await fetch(`http://127.0.0.1:8000/download-invoice/${id}/`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/pdf' },
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to download invoice');
-      }
-
-      // Convert response to blob
-      const blob = await response.blob();
-
-      // Create a URL for the blob
-      const url = window.URL.createObjectURL(new Blob([blob]));
-
-      // Create a temporary <a> element to trigger the download
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `invoice_${order_name}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-
-      // Clean up: remove the temporary <a> element and revoke the URL
-      window.URL.revokeObjectURL(url);
-      a.remove();
-    } catch (error) {
-      console.error('Error downloading invoice:', error);
-    }
-  };
-
-  return (
-    <button onClick={downloadInvoiceWithId} className="rounded-md border p-2 hover:bg-gray-100">
-      <span className="sr-only">Download</span>
-      <DocumentArrowDownIcon className="w-5" />
-    </button>
-  );
-}
 
 
 export function UpdateInvoice({ id }: { id: string }) {
@@ -92,3 +56,5 @@ export function DeleteInvoice({ id }: { id: string }) {
     </form>
   );
 }
+
+

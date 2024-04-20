@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { EditEmployee, RemoveEmployee, SalaryEmployee } from '@/app/ui/employees/buttons';
+import { AttendanceEmployee, EditEmployee, RemoveEmployee, SalaryEmployee } from '@/app/ui/employees/buttons';
 // import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 
@@ -121,6 +121,7 @@ export default async function EmployeeTable({
                  </td>
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
+                    <AttendanceEmployee id={employees.employee_id} name={employees.name} />
                     <SalaryEmployee id={employees.employee_id} name={employees.name} />
                     <EditEmployee id={employees.employee_id} />
                     <RemoveEmployee id={employees.employee_id} />

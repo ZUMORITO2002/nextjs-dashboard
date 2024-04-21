@@ -22,7 +22,11 @@ export default async function Order({
   useEffect(() => {
      const fetchData = async () => {
        try {
-         const response = await fetch('http://127.0.0.1:8000/list_orders');
+         let apiUrl = 'http://127.0.0.1:8000/list_orders';
+         if (orderType !== 'all') {
+           apiUrl += `?status=${orderType}`;
+         }
+         const response = await fetch(apiUrl);
          if (!response.ok) {
            console.error('Network response was not ok');
            return;
@@ -36,7 +40,8 @@ export default async function Order({
      };
  
      fetchData();
-  }, []); // Empty dependency array means this effect runs once on component mount
+  }, [orderType]);
+ // Empty dependency array means this effect runs once on component mount
 
   return (
     <div className="mt-6 flow-root">
@@ -53,22 +58,13 @@ export default async function Order({
         </div>
         <div
           className={`flex h-10 items-center rounded-lg px-4 text-sm font-medium text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
-            orderType === 'new'
+            orderType === 'In Progress'
               ? 'bg-green-600 hover:bg-green-500'
               : 'bg-blue-600 hover:bg-green-500'
           }`}
-          onClick={() => setOrderType('new')}
+          onClick={() => setOrderType('In Progress')}
         >
-          <span className="md:block">New Order</span>
-        </div>
-        <div
-          className={`flex h-10 items-center rounded-lg px-4 text-sm font-medium text-white transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
-            orderType === 'IP'
-              ? 'bg-green-600 hover:bg-green-500'
-              : 'bg-blue-600 hover:bg-green-500'
-          }`}
-          onClick={() => setOrderType('IP')}
-        >
+
           <span className="md:block">In Progress</span>
         </div>
         <div

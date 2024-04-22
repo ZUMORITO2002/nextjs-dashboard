@@ -7,7 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 
 import { Button } from "@/components/ui/button"
-
+import { DocumentMagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
   Form,
   FormControl,
@@ -180,15 +180,15 @@ export default function EditQuotationForm({ quotationId }: { quotationId: string
                 <input
                   id="delivered"
                   type="radio"
-                  value="Under_Review"
+                  value="Under Review"
                   {...form.register('quotation_status')} // Register the radio button with React Hook Form
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
                   htmlFor="delivered"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-yellow-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Under Review <CheckIcon className="h-4 w-4" />
+                  Under Review <DocumentMagnifyingGlassIcon  className="h-4 w-4" />
                 </label>
               </div>
               <div className="flex items-center">

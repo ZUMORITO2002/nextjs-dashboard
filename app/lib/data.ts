@@ -113,40 +113,49 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchCardData() {
-  noStore();
-  try {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
-    const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
-    const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
-    const invoiceStatusPromise = sql`SELECT
-         SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
-         SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
-         FROM invoices`;
+    // const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+    // const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
+    // const invoiceStatusPromise = sql`SELECT
+    //      SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
+    //      SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending"
+    //      FROM invoices`;
 
-    const data = await Promise.all([
-      invoiceCountPromise,
-      customerCountPromise,
-      invoiceStatusPromise,
-    ]);
+    // const data = await Promise.all([
+    //   invoiceCountPromise,
+    //   customerCountPromise,
+    //   invoiceStatusPromise,
+    // ]);
+      type Dashboard_Field = {
+        number_of_customers: string,
+        number_of_invoices: string,
+        paid_invoices: string,
+        unpaid_invoices: string,
+      }
+      noStore();
+      try {
+        const response = await fetch('http://127.0.0.1:8000/dashboard_api');
+        const responseData = await response.json();
+        const dashboard_data: Dashboard_Field [] = responseData.map((item: any) => ({
+          number_of_customers: item.number_of_customers,
+          number_of_invoices: item.number_of_invoices,
+          paid_invoices: item.paid_invoices,
+          unpaid_invoices:item.unpaid_invoices,
+      }))
+        console.log(dashboard_data)
+        return dashboard_data
+      } catch (err) {
+        console.error('Database Error:', err);
+        throw new Error('Failed to fetch all suppliers.');
+      }
+    }
+    
+  
 
-    const numberOfInvoices = Number(data[0].rows[0].count ?? '0');
-    const numberOfCustomers = Number(data[1].rows[0].count ?? '0');
-    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? '0');
-    const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? '0');
-
-    return {
-      numberOfCustomers,
-      numberOfInvoices,
-      totalPaidInvoices,
-      totalPendingInvoices,
-    };
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch card data.');
-  }
-}
+    
+  
 
 const ITEMS_PER_PAGE = 6;
 

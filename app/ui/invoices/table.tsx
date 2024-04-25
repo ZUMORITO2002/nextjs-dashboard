@@ -10,7 +10,7 @@ import InvoiceStatus from '@/app/ui/invoices/status';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchInvoices } from '@/app/lib/data';
 import { Invoice } from '@/app/lib/definitions';
-import {DocumentArrowDownIcon } from '@heroicons/react/24/outline';
+import { DocumentArrowDownIcon } from '@heroicons/react/24/outline';
 export default function Invoices({
   query,
   currentPage,
@@ -22,54 +22,59 @@ export default function Invoices({
   function DownloadInvoice({
     id,
     order_name,
+    status,
   }: {
     id: string;
     order_name: string;
+    status: string;
   }) {
     const [isLoading, setIsLoading] = useState(false);
 
     const downloadInvoiceWithId = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          `http://127.0.0.1:8000/download-invoice/${id}/`,
-          {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/pdf' },
-          },
-        );
+      if (status == "Paid") {
+        setIsLoading(true);
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/download-invoice/${id}/`,
+            {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/pdf' },
+            },
+          );
 
-        if (!response.ok) {
-          throw new Error('Failed to download invoice');
+          if (!response.ok) {
+            throw new Error('Failed to download invoice');
+          }
+
+          // Convert response to blob
+          const blob = await response.blob();
+
+          // Create a URL for the blob
+          const url = window.URL.createObjectURL(new Blob([blob]));
+
+          // Create a temporary <a> element to trigger the download
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `invoice_${order_name}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+
+          // Clean up: remove the temporary <a> element and revoke the URL
+          window.URL.revokeObjectURL(url);
+          a.remove();
+
+          // Show success feedback to the user
+          alert('Invoice downloaded successfully!');
+        } catch (error) {
+          console.error('Error downloading invoice:', error);
+          // Show error feedback to the user
+          alert('Failed to download invoice. Please try again later.');
+        } finally {
+          setIsLoading(false);
         }
-
-        // Convert response to blob
-        const blob = await response.blob();
-
-        // Create a URL for the blob
-        const url = window.URL.createObjectURL(new Blob([blob]));
-
-        // Create a temporary <a> element to trigger the download
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `invoice_${order_name}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-
-        // Clean up: remove the temporary <a> element and revoke the URL
-        window.URL.revokeObjectURL(url);
-        a.remove();
-
-        // Show success feedback to the user
-        alert('Invoice downloaded successfully!');
-      } catch (error) {
-        console.error('Error downloading invoice:', error);
-        // Show error feedback to the user
-        alert('Failed to download invoice. Please try again later.');
-      } finally {
-        setIsLoading(false);
       }
     };
+
 
     return (
       <button
@@ -165,6 +170,7 @@ export default function Invoices({
                     <DownloadInvoice
                       id={invoice.order_id}
                       order_name={invoice.order_name}
+                      status={invoice.invoice_status}
                     />
                     <UpdateInvoice id={invoice.order_id} />
                     <DeleteInvoice id={invoice.order_id} />
@@ -230,6 +236,7 @@ export default function Invoices({
                       <DownloadInvoice
                         id={invoice.order_id}
                         order_name={invoice.order_name}
+                        status={invoice.invoice_status}
                       />
                       <UpdateInvoice id={invoice.order_id} />
                       <DeleteInvoice id={invoice.order_id} />

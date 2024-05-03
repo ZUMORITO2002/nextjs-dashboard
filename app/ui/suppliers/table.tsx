@@ -67,7 +67,7 @@ export default function Supplier({
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
                     <EditSupplier id={supplier.supplier_id} />
-                    <RemoveSupplier id={supplier.supplier_id} />
+                    {/* <RemoveSupplier id={supplier.supplier_id} /> */}
                  </div>
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function Supplier({
                     <div className="flex justify-end gap-3">
                     {/* <SummarySupplier id={supplier.id} /> */}
                     <EditSupplier id={supplier.supplier_id} />
-                    <RemoveSupplier id={supplier.supplier_id} />
+                    {/* <RemoveSupplier id={supplier.supplier_id} /> */}
                     </div>
                  </td>
                 </tr>

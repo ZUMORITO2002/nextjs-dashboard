@@ -60,7 +60,7 @@ export default async function CustomerTable({
                 <div className="flex w-full items-center justify-between pt-4">
                   <div className="flex justify-end gap-2">
                     <EditCustomer id={customers.id} />
-                    <RemoveCustomer id={customers.id} />
+                    {/* <RemoveCustomer id={customers.id} /> */}
                   </div>
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default async function CustomerTable({
                   <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                       <EditCustomer id={customers.id} />
-                      <RemoveCustomer id={customers.id} />
+                      {/* <RemoveCustomer id={customers.id} /> */}
                     </div>
                   </td>
                 </tr>

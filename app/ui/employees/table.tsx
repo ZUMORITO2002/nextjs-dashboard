@@ -67,7 +67,7 @@ export default async function EmployeeTable({
                   <div className="flex justify-end gap-2">
                     <SalaryEmployee id={employees.employee_id} name={employees.name}/>
                     <EditEmployee id={employees.employee_id} />
-                    <RemoveEmployee id={employees.employee_id} />
+                    {/* <RemoveEmployee id={employees.employee_id} /> */}
                   </div>
                 </div>
               </div>
@@ -124,7 +124,7 @@ export default async function EmployeeTable({
                     <AttendanceEmployee id={employees.employee_id} name={employees.name} />
                     <SalaryEmployee id={employees.employee_id} name={employees.name} />
                     <EditEmployee id={employees.employee_id} />
-                    <RemoveEmployee id={employees.employee_id} />
+                    {/* <RemoveEmployee id={employees.employee_id} /> */}
                     </div>
                   </td>
                 </tr>

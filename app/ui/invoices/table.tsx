@@ -173,7 +173,7 @@ export default function Invoices({
                       status={invoice.invoice_status}
                     />
                     <UpdateInvoice id={invoice.order_id} />
-                    <DeleteInvoice id={invoice.order_id} />
+                    {/* <DeleteInvoice id={invoice.order_id} /> */}
                   </div>
                 </div>
               </div>
@@ -239,7 +239,7 @@ export default function Invoices({
                         status={invoice.invoice_status}
                       />
                       <UpdateInvoice id={invoice.order_id} />
-                      <DeleteInvoice id={invoice.order_id} />
+                      {/* <DeleteInvoice id={invoice.order_id} /> */}
                     </div>
                   </td>
                 </tr>

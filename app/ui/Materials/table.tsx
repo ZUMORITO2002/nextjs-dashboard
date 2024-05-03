@@ -59,7 +59,7 @@ export default function Materials({
                 <div className="flex w-full items-center justify-between pt-4">
                  <div className="flex justify-end gap-2">
                     <UpdateMaterials id={material.material_id} />
-                    <RemoveMaterial id={material.material_id} />
+                    {/* <RemoveMaterial id={material.material_id} /> */}
                  </div>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export default function Materials({
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
                     <UpdateMaterials id={material.material_id} />
-                    <RemoveMaterial id={material.material_id} />
+                    {/* <RemoveMaterial id={material.material_id} /> */}
                     </div>
                  </td>
                 </tr>

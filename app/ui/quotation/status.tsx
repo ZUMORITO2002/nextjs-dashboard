@@ -7,27 +7,27 @@ export default function QuotationStatus({ status }: { status: string }) {
       className={clsx(
         'inline-flex items-center rounded-full px-2 py-1 text-xs',
         {
-          'bg-red-100 text-red-500': status === 'Rejected',
-          'bg-yellow-500 text-yellow-900': status === 'Under Review',
-          'bg-green-500 text-white': status === 'Accepted',
+          'bg-red-100 text-red-500': status === 'denied',
+          'bg-yellow-500 text-yellow-900': status === 'under_review',
+          'bg-green-500 text-white': status === 'approved',
         },
       )}
     >
-      {status === 'Rejected' ? (
+      {status === 'denied' ? (
         <>
           Rejected
           <ClockIcon className="ml-1 w-4 text-red-500" />
         </>
       ) : null}
 
-      {status === 'Under Review' ? (
+      {status === 'under_review' ? (
         <>
           Under Review
           <DocumentMagnifyingGlassIcon className="ml-1 w-4 text-gray-500" />
         </>
-      ) : null}
+      ): null}
 
-      {status === 'Accepted' ? (
+      {status === 'approved' ? (
         <>
           Accepted
           <CheckIcon className="ml-1 w-4 text-white" />

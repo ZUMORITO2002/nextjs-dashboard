@@ -121,7 +121,7 @@ export default function Supplier({
                  </td>
                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
                     <div className="flex justify-end gap-3">
-                    <SummarySupplier id={supplier.id} />
+                    {/* <SummarySupplier id={supplier.id} /> */}
                     <EditSupplier id={supplier.supplier_id} />
                     <RemoveSupplier id={supplier.supplier_id} />
                     </div>

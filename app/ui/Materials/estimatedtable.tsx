@@ -33,10 +33,10 @@ export default function EstimatedMaterials({
  }, []); // Empty dependency array means this effect runs once on component mount
 
  return (
-    <div className="mt-6 flow-root">
-        <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Estimated Units for next month
-      </h2>
+  <div className="flex w-full flex-col md:col-span-4">
+  <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+    Estimated Units for next month
+  </h2>
       <div className="inline-block min-w-full align-middle">
         <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
           <div className="md:hidden">

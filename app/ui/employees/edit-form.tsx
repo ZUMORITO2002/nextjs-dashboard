@@ -21,19 +21,18 @@ import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { addCustomer } from "@/app/lib/actions"
 
-const profileFormSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  address:z.string(),
-  phone_number: z.string(),
-});
+// const employeeFormSchema = z.object({
+//   id: z.string(),
+//   name: z.string(),
+//   address:z.string(),
+//   phone_number: z.string(),
+// });
 
-type ProfileFormValues = z.infer<typeof profileFormSchema>
+// type EmployeeFormValues = z.infer<typeof employeeFormSchema>
 
 export default function EditEmployeeForm({ employeeId }: {  employeeId: string }) {
   console.log("i am not gay", employeeId)
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileFormSchema),
+  const form = useForm({
     mode: "onChange",
     defaultValues: async () => {
       try {
@@ -66,7 +65,7 @@ export default function EditEmployeeForm({ employeeId }: {  employeeId: string }
     },
   });
 
-  async function onSubmit(data: ProfileFormValues) {
+  async function onSubmit(data: any ) {
     console.log("Button Was Clicked")
     try {
       const response = await fetch(`http://localhost:8000/update_employees`, {

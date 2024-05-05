@@ -27,22 +27,21 @@ import { useFormState } from 'react-dom';
 import { toast } from "@/components/ui/use-toast";
 
 
-const materialFormSchema = z.object({
-  material_name: z
-    .string(),
+// const materialFormSchema = z.object({
+//   material_name: z
+//     .string(),
 
-  material_amount: z
-    .string(),
-})
+//   material_amount: z
+//     .string(),
+// })
 
-type MaterialFormValues = z.infer<typeof materialFormSchema>
+// type MaterialFormValues = z.infer<typeof materialFormSchema>
 
   export default function EditMaterialForm({ materialId }: { materialId: string;}) {
   // const initialState = { message: null, errors: {} };
   // const updateMaterialWithId = updateMaterial.bind(null, material.materials_id);
   // const [state, dispatch] = useFormState(updateMaterialWithId, initialState);
-  const form = useForm<MaterialFormValues>({
-    resolver: zodResolver(materialFormSchema),
+  const form = useForm({
     mode: "onChange",
     defaultValues: async () => {
       try {
@@ -72,7 +71,7 @@ type MaterialFormValues = z.infer<typeof materialFormSchema>
     },
   });
 
-  async function onSubmit(data: MaterialFormValues) {
+  async function onSubmit(data: any) {
     console.log("Button Was Clicked")
     console.log("This is data variable", data)
     // data.id = global_i

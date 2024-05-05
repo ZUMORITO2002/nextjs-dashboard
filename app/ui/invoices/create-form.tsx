@@ -18,6 +18,8 @@ import { useState } from "react";
 import { toast } from "@/components/ui/use-toast";
 import DocumentTextIcon from "@heroicons/react/20/solid/DocumentTextIcon";
 
+
+
 const InvoiceFormSchema = z.object({
   order_name: z
     .string(),
@@ -37,6 +39,7 @@ type InvoiceFormValues = z.infer<typeof InvoiceFormSchema>
 
 
 export default function InvoiceForm({ orders }: { orders: Orders[] }) {
+  // const router = useRouter()
   // const initialState = { message: null, errors: {} };
   // const [state, dispatch] = useFormState(createInvoice, initialState);
   const [selectedOrder, setSelectedOrder] = useState<Orders | null>(null);
@@ -99,13 +102,17 @@ export default function InvoiceForm({ orders }: { orders: Orders[] }) {
       invoice_status: status
     }
     const submitForm = async () => {
+      
       try {
         // Replace with your actual API call logic
         const response = await fetch('http://localhost:8000/create_invoice', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
-        });
+        }
+        
+        
+      );
 
         if (!response.ok) {
           throw new Error('Failed to submit form');
@@ -228,14 +235,14 @@ export default function InvoiceForm({ orders }: { orders: Orders[] }) {
               </div>
               <div className="flex items-center">
                 <input
-                  id="paid"
+                  id="Paid"
                   name="status"
                   type="radio"
-                  value="paid"
+                  value="Paid"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
-                  htmlFor="paid"
+                  htmlFor="Paid"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
                   Paid <CheckIcon className="h-4 w-4" />
@@ -252,7 +259,10 @@ export default function InvoiceForm({ orders }: { orders: Orders[] }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+    
+        <Button type="submit" >Create Invoice
+        
+    </Button>
       </div>
     </form>
   );

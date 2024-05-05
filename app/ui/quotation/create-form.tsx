@@ -171,32 +171,32 @@ export default function Form({ suppliers }: { suppliers: SuppliersField[] }) {
              <div className="flex gap-4">
                <div className="flex items-center">
                  <input
-                   id="denied"
+                   id="Rejected"
                   name="status"
                   type="radio"
-                   value="denied"
+                   value="Rejected"
                    className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                />
                  <label
-                  htmlFor="denied"
+                  htmlFor="Rejected"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-600"
                 >
-                  Denied <ClockIcon className="h-4 w-4" />
+                  Rejected <ClockIcon className="h-4 w-4" />
                 </label>
             
 
 
               <div className="flex items-center">
                 <input
-                  id="under_review"
+                  id="Under Review"
                   name="status"
                   type="radio"
-                  value="under_review"
+                  value="Under Review"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                
                <label
-                  htmlFor="under_review"
+                  htmlFor="Under Review"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
                   Under Review <DocumentMagnifyingGlassIcon className="ml-1 w-4 text-gray-500" />
@@ -204,17 +204,17 @@ export default function Form({ suppliers }: { suppliers: SuppliersField[] }) {
 
               <div className="flex items-center">
                 <input
-                  id="approved"
+                  id="Accepted"
                   name="status"
                   type="radio"
-                  value="approved"
+                  value="Accepted"
                   className="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-gray-600 focus:ring-2"
                 />
                 <label
-                  htmlFor="approved"
+                  htmlFor="Accepted"
                   className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-500 px-3 py-1.5 text-xs font-medium text-white"
                 >
-                  Approved <CheckIcon className="h-4 w-4" />
+                  Accepted <CheckIcon className="h-4 w-4" />
                 </label>
               </div>
             </div>
